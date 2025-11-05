@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "category": "Akun",
+    "title": "Bagaimana cara mengubah password saya?",
+    "content": "Anda dapat mengubah password Anda dengan masuk ke halaman Profil dari menu pengguna di pojok kanan atas. Di sana Anda akan menemukan bagian untuk memasukkan password baru."
+  },
+  {
+    "id": 2,
+    "category": "Tiket",
+    "title": "Apa saja status tiket dan artinya?",
+    "content": "Ada tiga status tiket: Open (terbuka dan menunggu agen), In Progress (sedang ditangani oleh agen), dan Closed (masalah sudah terselesaikan)."
+  },
+  {
+    "id": 3,
+    "category": "Akun",
+    "title": "Saya tidak bisa login, apa yang harus saya lakukan?",
+    "content": "Pastikan email dan password yang Anda masukkan sudah benar. Jika Anda lupa password, Anda dapat menggunakan fitur 'Lupa Password' yang akan segera kami implementasikan."
+  },
+  {
+    "id": 4,
+    "category": "Umum",
+    "title": "Apakah platform ini gratis?",
+    "content": "Ya, untuk saat ini platform helpdesk ini adalah prototipe yang dapat digunakan secara gratis."
+  }
+]
