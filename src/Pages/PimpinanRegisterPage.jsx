@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Shield, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Shield, Lock, Eye, EyeOff, Building } from 'lucide-react';
 
-const RegisterSuperAdminPage = () => {
+const PimpinanRegisterPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -10,7 +10,6 @@ const RegisterSuperAdminPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -41,34 +40,22 @@ const RegisterSuperAdminPage = () => {
         setError('Email sudah terdaftar');
         return;
       }
-      
-      // Cek apakah sudah ada super admin
-      const existingSuperAdmin = users.find(user => user.role === 'superadmin');
-      if (existingSuperAdmin) {
-        setError('Super Admin sudah ada. Hanya satu Super Admin yang diperbolehkan.');
-        return;
-      }
 
-      // Tambahkan user baru dengan role superadmin
-      const newSuperAdmin = {
+      // Tambahkan user baru dengan role pimpinan
+      const newPimpinan = {
         id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
         name,
         email,
         password,
         profileImage: '/src/assets/default-avatar.png', // Default profile image
-        role: 'superadmin' // Role superadmin
+        role: 'pimpinan' // Role pimpinan
       };
 
-      users.push(newSuperAdmin);
+      users.push(newPimpinan);
       localStorage.setItem('users', JSON.stringify(users));
 
-      setSuccess(true);
-      setError('');
-
-      // Redirect setelah 2 detik
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+      alert('Pendaftaran berhasil! Kamu sekarang bisa masuk dengan akun barumu.');
+      navigate('/login');
     } catch (err) {
       setError('Terjadi kesalahan saat mendaftar');
     }
@@ -84,8 +71,8 @@ const RegisterSuperAdminPage = () => {
               alt="Logo Ekuitas"
               className="h-16 w-16 mb-4 rounded-full shadow-md"
             />
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-2">Buat Akun Super Admin</h2>
-            <p className="text-center text-gray-500 mb-8">Akses penuh terhadap sistem</p>
+            <h2 className="text-3xl font-bold text-center text-gray-900 mb-2">Buat Akun Pimpinan</h2>
+            <p className="text-center text-gray-500 mb-8">Akses laporan pimpinan</p>
           </div>
 
           {error && <p className="bg-red-100 text-red-700 text-sm rounded-lg p-3 text-center mb-4">{error}</p>}
@@ -112,7 +99,7 @@ const RegisterSuperAdminPage = () => {
                 className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
                 id="email" 
                 type="email" 
-                placeholder="superadmin@contoh.com"
+                placeholder="pimpinan@contoh.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -167,7 +154,7 @@ const RegisterSuperAdminPage = () => {
             <button 
               className="w-full bg-[#F6E603] hover:bg-yellow-300 text-[#0F50A1] font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 shadow-md hover:shadow-lg"
               type="submit">
-              Buat Akun Super Admin
+              Buat Akun Pimpinan
             </button>
           </form>
 
@@ -180,4 +167,4 @@ const RegisterSuperAdminPage = () => {
   );
 };
 
-export default RegisterSuperAdminPage;
+export default PimpinanRegisterPage;

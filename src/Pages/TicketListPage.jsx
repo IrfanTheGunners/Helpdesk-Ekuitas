@@ -9,8 +9,8 @@ import { Search } from 'lucide-react';
 
 const getStatusBadge = (status) => {
   switch (status?.toLowerCase()) {
-    case 'open': return 'bg-[#0F50A1]/20 text-[#0F50A1]';
-    case 'in progress': return 'bg-[#F6E603]/20 text-[#F6E603]';
+    case 'open': return 'bg-[#49B6B0]/20 text-[#49B6B0]';
+    case 'in progress': return 'bg-[#1577B6]/20 text-[#1577B6]';
     case 'closed': return 'bg-[#6FD36A]/20 text-[#6FD36A]';
     default: return 'bg-gray-500/20 text-gray-300';
   }
@@ -36,6 +36,8 @@ const TicketListPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ticketsPerPage = 10; // Jumlah tiket per halaman
 
   // This effect now re-runs every time the page location changes
   useEffect(() => {
@@ -62,6 +64,17 @@ const TicketListPage = () => {
       if (priorityFilter === 'all') return true;
       return ticket.priority === priorityFilter;
     });
+
+  // Pagination calculations
+  const indexOfLastTicket = currentPage * ticketsPerPage;
+  const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
+  const currentTickets = filteredTickets.slice(indexOfFirstTicket, indexOfLastTicket);
+  const totalPages = Math.ceil(filteredTickets.length / ticketsPerPage);
+
+  // Function to handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const getUserName = (userId) => {
     const user = users.find(u => u.id === userId);
@@ -110,58 +123,51 @@ const TicketListPage = () => {
         </select>
       </div>
       
-      <div className="theme-table rounded-lg shadow-lg overflow-hidden">
+      <div className="rounded-xl overflow-hidden shadow-lg">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="theme-table-header">
-              <tr>
-                <th className="p-4 font-semibold" style={{color: '#5A5858', backgroundColor: '#f9fafb'}}>Judul</th>
-                {isAgent && <th className="p-4 font-semibold" style={{color: '#5A5858', backgroundColor: '#f9fafb'}}>Pembuat</th>}
-                <th className="p-4 font-semibold" style={{color: '#5A5858', backgroundColor: '#f9fafb'}}>Kategori</th>
-                <th className="p-4 font-semibold" style={{color: '#5A5858', backgroundColor: '#f9fafb'}}>Status</th>
-                <th className="p-4 font-semibold" style={{color: '#5A5858', backgroundColor: '#f9fafb'}}>Prioritas</th>
-                <th className="p-4 font-semibold" style={{color: '#5A5858', backgroundColor: '#f9fafb'}}>SLA</th>
-                <th className="p-4 font-semibold" style={{color: '#5A5858', backgroundColor: '#f9fafb'}}>Update Terakhir</th>
+            <thead className="bg-[#f9fafb]">
+              <tr className="border-b border-gray-200">
+                <th className="py-4 px-6 font-semibold text-gray-700">Judul</th>
+                {isAgent && <th className="py-4 px-6 font-semibold text-gray-700">Pembuat</th>}
+                <th className="py-4 px-6 font-semibold text-gray-700">Kategori</th>
+                <th className="py-4 px-6 font-semibold text-gray-700">Status</th>
+                <th className="py-4 px-6 font-semibold text-gray-700">Prioritas</th>
+                <th className="py-4 px-6 font-semibold text-gray-700">Update Terakhir</th>
               </tr>
             </thead>
-            <tbody>
-              {filteredTickets.length > 0 ? filteredTickets.map(ticket => (
+            <tbody className="divide-y divide-gray-200">
+              {currentTickets.length > 0 ? currentTickets.map(ticket => (
                 <tr 
                   key={ticket.id} 
-                  className="border-t hover:opacity-80 cursor-pointer transition-colors"
+                  className="hover:bg-gray-50 cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md rounded-lg mx-2"
                   onClick={() => navigate(`/ticket/${ticket.id}`)}
                   style={{backgroundColor: 'white'}}
                 >
-                  <td className="p-4" style={{color: '#5A5858'}}>{ticket.title}</td>
-                  {isAgent && <td className="p-4" style={{color: '#5A5858'}}>{getUserName(ticket.userId)}</td>}
-                  <td className="p-4" style={{color: '#5A5858'}}>{ticket.category || 'N/A'}</td>
-                  <td className="p-4">
-                    <span className={`px-2 py-1 text-xs font-bold rounded-full ${getStatusBadge(ticket.status)}`} style={{color: '#5A5858'}}>
+                  <td className="py-4 px-6 font-medium text-gray-800 hover:underline">{ticket.title}</td>
+                  {isAgent && <td className="py-4 px-6 text-gray-700">{getUserName(ticket.userId)}</td>}
+                  <td className="py-4 px-6 text-gray-700">{ticket.category || 'N/A'}</td>
+                  <td className="py-4 px-6">
+                    <span className={`px-2 py-1 text-xs font-bold rounded-full ${getStatusBadge(ticket.status)}`}>
                       {translateStatus(ticket.status) || 'N/A'}
                     </span>
                   </td>
-                  <td className="p-4">
-                    <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${getPriorityBadge(ticket.priority)}`} style={{color: '#5A5858'}}>
+                  <td className="py-4 px-6">
+                    <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${getPriorityBadge(ticket.priority)}`}>
                         {translatePriority(ticket.priority) || 'N/A'}
                     </span>
                   </td>
-                  <td className="p-4">
-                    {ticket.priority === 'Tinggi' && (
-                      <span className="text-red-400 text-xs" style={{color: 'red'}}>1 jam</span>
-                    )}
-                    {ticket.priority === 'Sedang' && (
-                      <span className="text-yellow-400 text-xs" style={{color: '#fbbf24'}}>30 menit</span>
-                    )}
-                    {ticket.priority === 'Rendah' && (
-                      <span className="text-green-400 text-xs" style={{color: 'green'}}>15 menit</span>
-                    )}
-                  </td>
-                  <td className="p-4" style={{color: '#5A5858'}}>{new Date(ticket.updatedAt).toLocaleDateString('id-ID')}</td>
+                  <td className="py-4 px-6 text-gray-700">{new Date(ticket.updatedAt).toLocaleDateString('id-ID')}</td>
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={isAgent ? 7 : 6} className="text-center p-8" style={{color: '#5A5858', backgroundColor: 'white'}}>
-                    Tidak ada tiket yang cocok dengan kriteria Anda.
+                  <td colSpan={isAgent ? 7 : 6} className="text-center py-12" style={{backgroundColor: 'white'}}>
+                    <div className="flex flex-col items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <p className="text-gray-600">Tidak ada tiket yang cocok dengan kriteria Anda.</p>
+                    </div>
                   </td>
                 </tr>
               )}
@@ -169,6 +175,71 @@ const TicketListPage = () => {
           </table>
         </div>
       </div>
+
+      {/* Pagination Controls */}
+      {filteredTickets.length > ticketsPerPage && (
+        <div className="flex justify-between items-center mt-6">
+          <div className="text-gray-600">
+            Menampilkan {indexOfFirstTicket + 1}-{Math.min(indexOfLastTicket, filteredTickets.length)} dari {filteredTickets.length} tiket
+          </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 rounded-lg ${
+                currentPage === 1 
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              Sebelumnya
+            </button>
+            
+            {/* Page Numbers */}
+            {[...Array(totalPages)].map((_, i) => {
+              const pageNum = i + 1;
+              // Show first, last, and nearby pages
+              if (
+                pageNum === 1 || 
+                pageNum === totalPages || 
+                (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+              ) {
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handlePageChange(pageNum)}
+                    className={`px-4 py-2 rounded-lg ${
+                      currentPage === pageNum
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              } else if (
+                pageNum === currentPage - 2 || 
+                pageNum === currentPage + 2
+              ) {
+                return <span key={i} className="px-4 py-2">...</span>;
+              }
+              return null;
+            })}
+            
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 rounded-lg ${
+                currentPage === totalPages 
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              Berikutnya
+            </button>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };

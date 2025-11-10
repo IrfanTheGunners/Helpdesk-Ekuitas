@@ -19,9 +19,15 @@ export default function LandingPage() {
       {/* Custom Navbar for Landing Page */}
       <nav className="w-full bg-[#0F50A1] text-white px-6 py-3 flex items-center shadow-md fixed top-0 left-0 right-0 z-50">
         <div className="container mx-auto flex items-center">
-          <h1 className="text-xl font-bold ml-2">Helpdesk System</h1>
+          <div className="flex items-center gap-3">
+            <img
+              src="/ekuitas-new.png"
+              alt="Logo Ekuitas"
+              className="h-10 w-10 shadow-lg rounded-full"
+            />
+          </div>
           <div className="ml-auto flex items-center gap-4">
-            
+            <div className="h-6 w-px bg-white/50 mx-2 hidden md:block"></div>
             <button
               className="bg-[#F6E603] text-[#0F50A1] hover:bg-yellow-300 px-4 py-2 rounded-lg transition duration-300 font-semibold"
               onClick={() => navigate('/login')}
@@ -37,11 +43,13 @@ export default function LandingPage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="order-2 md:order-1">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-[#0F50A1]">
-                Selamat Datang di <span className="text-[#F6E603]">Helpdesk</span> Ekuitas
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 text-[#0F50A1]">
+                Selamat Datang di <span className="text-[#F6E603] font-extrabold">Helpdesk</span> <span className="text-[#0F50A1] font-extrabold">Ekuitas</span>
               </h1>
               <p className="text-base md:text-lg lg:text-xl text-black mb-6 md:mb-8">
-                Layanan informasi dan bantuan untuk mahasiswa, dosen, dan civitas akademika Universitas Ekuitas.
+                Selamat datang di Helpdesk Ticketing System, tempat untuk melaporkan masalah, mengajukan permintaan, 
+                dan memantau status tiket dengan mudah. Layanan tersedia setiap hari, dan tim kami siap membantu 
+                di jam kerja pukul 08:00 sampai 17:00 WIB.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <button 
@@ -60,7 +68,7 @@ export default function LandingPage() {
             </div>
             <div className="order-1 md:order-2 flex justify-center">
               <img 
-                src="/border-ekuitas.png" 
+                src="border-ekuitas.png" 
                 alt="Helpdesk" 
                 className="max-w-[90%] md:max-w-[120%] h-auto max-h-[500px] object-contain rounded-lg transition-transform duration-300 hover:scale-105"
               />
@@ -75,7 +83,7 @@ export default function LandingPage() {
           <div className="bg-white rounded-lg max-w-md md:max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-[#0F50A1]">Tentang Helpdesk Ekuitas</h3>
+                <h3 className="text-xl font-bold text-[#0F50A1]">Tentang <span className="text-[#F6E603] font-bold">Helpdesk</span> <span className="text-[#0F50A1]">Ekuitas</span></h3>
                 <button 
                   onClick={() => setShowInfoModal(false)}
                   className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -85,8 +93,8 @@ export default function LandingPage() {
               </div>
               <div className="space-y-4 text-gray-700">
                 <p>
-                  Helpdesk System adalah platform digital yang menyediakan layanan dan bantuan kepada seluruh 
-                  civitas akademika Universitas Ekuitas. Dengan sistem yang responsif dan efisien, kami berkomitmen 
+                  Helpdesk System adalah platform digital yang menyediakan layanan dan bantahan kepada seluruh 
+                  civitas akademika <span className="text-[#0F50A1] font-bold">Universitas Ekuitas</span>. Dengan sistem yang responsif dan efisien, kami berkomitmen 
                   untuk memberikan solusi terbaik atas setiap pertanyaan dan masalah yang Anda hadapi.
                 </p>
                 <h4 className="font-bold text-[#0F50A1]">Layanan Kami:</h4>
@@ -120,11 +128,11 @@ export default function LandingPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
-              <h3 className="text-xl font-bold mb-2">Helpdesk System</h3>
-              <p>Universitas Ekuitas</p>
+              <h3 className="text-xl font-bold mb-2"><span className="text-[#F6E603] font-bold">Helpdesk</span> System</h3>
+              <p className="text-[#0F50A1]">Universitas Ekuitas</p>
             </div>
             <div className="flex flex-col items-center md:items-end">
-              <p>© {new Date().getFullYear()} Universitas Ekuitas. All rights reserved.</p>
+              <p>© {new Date().getFullYear()} <span className="text-[#0F50A1] font-bold">Universitas Ekuitas</span>. All rights reserved.</p>
             </div>
           </div>
         </div>

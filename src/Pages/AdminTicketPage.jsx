@@ -86,9 +86,9 @@ const AdminTicketPage = () => {
 
   const getStatusBadge = (status) => {
     switch (status?.toLowerCase()) {
-      case 'open': return '#3B82F6'; // blue-500
-      case 'in progress': return '#F59E0B'; // yellow-500
-      case 'closed': return '#10B981'; // green-500
+      case 'open': return '#49B6B0'; // teal
+      case 'in progress': return '#1577B6'; // blue
+      case 'closed': return '#6FD36A'; // green
       default: return '#6B7280'; // gray-500
     }
   };
@@ -161,7 +161,7 @@ const AdminTicketPage = () => {
       </div>
 
       {/* Search and Filter Section */}
-      <div className="bg-white p-6 rounded-xl shadow-md mb-6 border-r-4 border-r-[#5A5858]">
+      <div className="bg-white p-6 rounded-xl shadow-md mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -172,7 +172,7 @@ const AdminTicketPage = () => {
               placeholder="Cari judul atau deskripsi tiket..."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 pl-10 pr-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5A5858] focus:border-[#5A5858] transition duration-200"
+              className="w-full bg-gray-50 rounded-lg py-3 pl-10 pr-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5A5858] focus:border-[#5A5858] transition duration-200"
               style={{color: '#5A5858'}}
             />
           </div>
@@ -365,7 +365,7 @@ const AdminTicketPage = () => {
                             e.stopPropagation(); // Mencegah klik baris membuka detail tiket
                             deleteTicket(ticket.id);
                           }}
-                          className="text-red-600 hover:text-red-800"
+                          className="bg-red-600 hover:bg-red-700 text-white font-medium px-3 py-1 rounded"
                         >
                           Hapus
                         </button>
@@ -414,7 +414,7 @@ const AdminTicketPage = () => {
                       </select>
                       <button 
                         onClick={() => handleDeleteUser(user.id, user.name)}
-                        className="text-xs bg-red-600 hover:bg-red-700 px-2 py-1 rounded"
+                        className="text-xs bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
                       >
                         Hapus
                       </button>
@@ -451,7 +451,7 @@ const AdminTicketPage = () => {
                       {user.id !== currentUser.id && (
                         <button 
                           onClick={() => handleDeleteUser(user.id, user.name)}
-                          className="text-xs bg-red-600 hover:bg-red-700 px-2 py-1 rounded"
+                          className="text-xs text-white bg-red-600 hover:bg-red-700 px-2 py-1 rounded"
                         >
                           Hapus
                         </button>

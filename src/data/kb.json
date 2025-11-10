@@ -22,5 +22,41 @@
     "category": "Umum",
     "title": "Apakah platform ini gratis?",
     "content": "Ya, untuk saat ini platform helpdesk ini adalah prototipe yang dapat digunakan secara gratis."
+  },
+  {
+    "id": 5,
+    "category": "Teknis",
+    "title": "Aplikasi tidak merespons, apa yang harus saya lakukan?",
+    "content": "Coba muat ulang halaman terlebih dahulu. Jika masalah terus berlanjut, coba periksa koneksi internet Anda. Jika tidak ada perubahan, coba buka di browser lain atau hapus cache browser Anda."
+  },
+  {
+    "id": 6,
+    "category": "Tagihan",
+    "title": "Bagaimana cara mengajukan pembayaran?",
+    "content": "Anda bisa mengajukan pembayaran dengan membuka menu 'Pembayaran' dan mengisi formulir yang tersedia. Lampirkan bukti pembayaran dan sistem akan meninjau permintaan Anda dalam waktu 1-2 hari kerja."
+  },
+  {
+    "id": 7,
+    "category": "Umum",
+    "title": "Berapa lama waktu respon untuk tiket?",
+    "content": "Waktu respon bervariasi tergantung pada prioritas tiket Anda. Prioritas rendah: 15 menit, sedang: 30 menit, tinggi: 1 jam."
+  },
+  {
+    "id": 8,
+    "category": "Teknis",
+    "title": "Mengapa saya tidak bisa mengunggah file?",
+    "content": "Pastikan ukuran file tidak melebihi batas maksimum 10MB dan format file didukung (PDF, DOCX, JPG, PNG). Jika masih bermasalah, coba gunakan browser terbaru atau bersihkan cache browser Anda."
+  },
+  {
+    "id": 9,
+    "category": "Tagihan",
+    "title": "Apa saja metode pembayaran yang tersedia?",
+    "content": "Kami menerima pembayaran melalui transfer bank, kartu kredit, e-wallet, dan beberapa gerai ritel. Detail metode pembayaran dapat ditemukan di halaman pembayaran kami."
+  },
+  {
+    "id": 10,
+    "category": "Umum",
+    "title": "Bagaimana cara menghubungi tim support?",
+    "content": "Anda bisa menghubungi tim support kami dengan membuat tiket baru melalui sistem helpdesk. Tim kami tersedia setiap hari Senin-Jumat pukul 08:00-17:00 WIB."
   }
 ]

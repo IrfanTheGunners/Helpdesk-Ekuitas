@@ -5,9 +5,11 @@ import { Mail, Shield, Lock, Eye, EyeOff } from 'lucide-react';
 const RegisterAdminPage = () => {
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
@@ -22,8 +24,13 @@ const RegisterAdminPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (formData.password.length < 6) {
-      setError('Password harus minimal 6 karakter');
+    if (formData.password.length < 3) {
+      setError('Password harus minimal 3 karakter');
+      return;
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      setError('Password dan konfirmasi password tidak cocok');
       return;
     }
 
@@ -69,12 +76,12 @@ const RegisterAdminPage = () => {
         {!success ? (
           <div className="bg-white border border-gray-300 rounded-2xl p-8 shadow-lg">
             <div className="flex items-center justify-center mb-6">
-              <div className="bg-[#5A5858] p-3 rounded-lg">
+              <div className="bg-[#0F50A1] p-3 rounded-lg">
                 <Shield size={32} style={{color: 'white'}} />
               </div>
             </div>
             
-            <h2 className="text-3xl font-bold text-center" style={{color: '#5A5858'}} mb-2>Register Admin</h2>
+            <h2 className="text-3xl font-bold text-center mb-2" style={{color: '#5A5858'}}>Register Admin</h2>
             <p className="text-center text-gray-600 mb-8" style={{color: '#5A5858'}}>Buat akun admin untuk mengakses sistem</p>
             
             {error && (
@@ -93,7 +100,7 @@ const RegisterAdminPage = () => {
                     <Mail size={20} style={{color: '#5A5858'}} />
                   </div>
                   <input
-                    className="w-full bg-white border border-gray-300 rounded-lg py-3 pl-10 pr-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5A5858] focus:border-[#5A5858]"
+                    className="w-full bg-white border border-gray-300 rounded-lg py-3 pl-10 pr-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#F6E603] focus:border-[#F6E603]"
                     id="email"
                     type="email"
                     name="email"
@@ -105,7 +112,7 @@ const RegisterAdminPage = () => {
                 </div>
               </div>
               
-              <div className="mb-6">
+              <div className="mb-4">
                 <label className="block text-gray-600 text-sm font-bold mb-2" style={{color: '#5A5858'}} htmlFor="password">
                   Password
                 </label>
@@ -114,7 +121,7 @@ const RegisterAdminPage = () => {
                     <Lock size={20} style={{color: '#5A5858'}} />
                   </div>
                   <input
-                    className="w-full bg-white border border-gray-300 rounded-lg py-3 pl-10 pr-12 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5A5858] focus:border-[#5A5858]"
+                    className="w-full bg-white border border-gray-300 rounded-lg py-3 pl-10 pr-12 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#F6E603] focus:border-[#F6E603]"
                     id="password"
                     type={showPassword ? "text" : "password"}
                     name="password"
@@ -133,8 +140,36 @@ const RegisterAdminPage = () => {
                 </div>
               </div>
               
+              <div className="mb-6">
+                <label className="block text-gray-600 text-sm font-bold mb-2" style={{color: '#5A5858'}} htmlFor="confirmPassword">
+                  Konfirmasi Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock size={20} style={{color: '#5A5858'}} />
+                  </div>
+                  <input
+                    className="w-full bg-white border border-gray-300 rounded-lg py-3 pl-10 pr-12 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#F6E603] focus:border-[#F6E603]"
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? <EyeOff size={20} style={{color: '#5A5858'}} /> : <Eye size={20} style={{color: '#5A5858'}} />}
+                  </button>
+                </div>
+              </div>
+              
               <button
-                className="w-full bg-[#5A5858] hover:bg-[#4A4848] text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A5858]/50 transition duration-300"
+                className="w-full bg-[#F6E603] hover:bg-yellow-300 text-[#0F50A1] font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 shadow-md hover:shadow-lg"
                 type="submit"
               >
                 Register Admin
@@ -143,7 +178,7 @@ const RegisterAdminPage = () => {
 
             <p className="text-center text-gray-600 text-sm mt-8" style={{color: '#5A5858'}}>
               Sudah punya akun?{' '}
-              <a href="/login" className="text-[#5A5858] hover:text-[#4A4848] font-bold">
+              <a href="/login" className="text-[#1577B6] hover:text-[#0F50A1] font-bold">
                 Login di sini
               </a>
             </p>
@@ -157,7 +192,7 @@ const RegisterAdminPage = () => {
             </div>
             <h2 className="text-2xl font-bold mb-2" style={{color: '#5A5858'}}>Registrasi Berhasil!</h2>
             <p className="text-gray-600 mb-6" style={{color: '#5A5858'}}>Akun admin Anda telah dibuat. Anda akan diarahkan ke halaman login.</p>
-            <div className="w-8 h-8 border-4 border-[#5A5858] border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <div className="w-8 h-8 border-4 border-[#F6E603] border-t-transparent rounded-full animate-spin mx-auto"></div>
           </div>
         )}
       </div>

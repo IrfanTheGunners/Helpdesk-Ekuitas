@@ -14,7 +14,22 @@ const Header = ({ setIsSidebarOpen, onOpenProfileModal }) => {
 
   const loadNotifications = () => {
     const allNotifs = JSON.parse(localStorage.getItem('notifications')) || [];
-    const userNotifs = allNotifs.filter(n => n.userId === user?.id).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    // Filter notifikasi berdasarkan role
+    let userNotifs = [];
+    if (user?.role === 'admin' || user?.role === 'superadmin' || user?.role === 'pimpinan') {
+      // Untuk admin, superadmin, dan pimpinan - tampilkan notifikasi sistem dan manajemen
+      userNotifs = allNotifs.filter(n => 
+        (n.userId === user?.id || n.targetRole === user?.role) && 
+        (n.type === 'system' || n.type === 'management' || n.type === 'general')
+      ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else {
+      // Untuk agent dan client - tampilkan notifikasi umum
+      userNotifs = allNotifs.filter(n => 
+        n.userId === user?.id
+      ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+    
     setNotifications(userNotifs);
     setUnreadCount(userNotifs.filter(n => !n.isRead).length);
   };
@@ -46,7 +61,9 @@ const Header = ({ setIsSidebarOpen, onOpenProfileModal }) => {
 
   const handleMarkAsRead = (notificationId) => {
     const allNotifs = JSON.parse(localStorage.getItem('notifications')) || [];
-    const notifIndex = allNotifs.findIndex(n => n.id === notificationId && n.userId === user?.id);
+    const notifIndex = allNotifs.findIndex(n => n.id === notificationId && 
+      (n.userId === user?.id || 
+       (['admin', 'superadmin', 'pimpinan'].includes(user?.role) && n.targetRole === user?.role)));
     if (notifIndex !== -1) {
       allNotifs[notifIndex].isRead = true;
       localStorage.setItem('notifications', JSON.stringify(allNotifs));
@@ -57,8 +74,18 @@ const Header = ({ setIsSidebarOpen, onOpenProfileModal }) => {
 
   const handleMarkAllAsRead = () => {
     const allNotifs = JSON.parse(localStorage.getItem('notifications')) || [];
-    const userNotifs = allNotifs.filter(n => n.userId === user?.id);
     
+    // Filter notifikasi berdasarkan role
+    let userNotifs = [];
+    if (user?.role === 'admin' || user?.role === 'superadmin' || user?.role === 'pimpinan') {
+      userNotifs = allNotifs.filter(n => 
+        (n.userId === user?.id || n.targetRole === user?.role) && 
+        (n.type === 'system' || n.type === 'management' || n.type === 'general')
+      );
+    } else {
+      userNotifs = allNotifs.filter(n => n.userId === user?.id);
+    }
+
     // Update all notifications for this user to be read
     const updatedNotifs = allNotifs.map(notif => {
       if (userNotifs.some(userNotif => userNotif.id === notif.id)) {
@@ -66,7 +93,7 @@ const Header = ({ setIsSidebarOpen, onOpenProfileModal }) => {
       }
       return notif;
     });
-    
+
     localStorage.setItem('notifications', JSON.stringify(updatedNotifs));
     loadNotifications(); // Refresh UI
     setIsNotifOpen(false);

@@ -3,19 +3,18 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LandingPage from './Pages/LandingPage';
 import LoginPage from './Pages/Login';
 import RegisterPage from './Pages/Register';
-import ExecutiveRegisterPage from './Pages/ExecutiveRegisterPage';
+import PimpinanRegisterPage from './Pages/PimpinanRegisterPage';
+import RegisterAdminPage from './Pages/RegisterAdminPage';
 import Dashboard from './Pages/Dashboard';
 import ProfilePage from './Pages/ProfilePage';
 import TicketListPage from './Pages/TicketListPage';
 import NewTicketPage from './Pages/NewTicketPage';
 import TicketDetailPage from './Pages/TicketDetailPage';
 import KnowledgeBasePage from './Pages/KnowledgeBasePage';
-import AgentRegisterPage from './Pages/AgentRegisterPage';
-import RegisterAdminPage from './Pages/RegisterAdminPage'; 
 import AdminTicketPage from './Pages/AdminTicketPage';
 import AdminMonitoringAgentPage from './Pages/AdminMonitoringAgentPage';
 
-import RegisterSuperAdminPage from './Pages/RegisterSuperAdminPage';
+import RegisterSuperAdminTemp from './Pages/RegisterSuperAdminTemp';
 import SystemControlPage from './Pages/SystemControlPage';
 
 
@@ -57,8 +56,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/register-executive" element={<ExecutiveRegisterPage />} />
-        <Route path="/register-agent" element={<AgentRegisterPage />} />
+        <Route path="/register-pimpinan" element={<PimpinanRegisterPage />} />
         <Route path="/register-admin" element={<RegisterAdminPage />} />
         <Route path="/admin/tickets" element={
           <ProtectedRoute>
@@ -70,8 +68,13 @@ function App() {
             <AdminMonitoringAgentPage />
           </ProtectedRoute>
         } />
+        <Route path="/admin/unit-report" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
 
-        <Route path="/register-superadmin" element={<RegisterSuperAdminPage />} />
+        <Route path="/register-superadmin" element={<RegisterSuperAdminTemp />} />
         <Route path="/admin/system-control" element={
           <ProtectedRoute>
             <SystemControlPage />

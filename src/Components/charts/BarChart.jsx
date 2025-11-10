@@ -10,8 +10,8 @@ const BarChart = ({ data }) => {
 
   // Gunakan warna dari palette Anda
   const colors = {
-    Terbuka: '#0F50A1', // Biru tua dari palette
-    Dikerjakan: '#F6E603', // Kuning dari palette
+    Terbuka: '#49B6B0', // Teal dari palette
+    Dikerjakan: '#1577B6', // Biru sedang dari palette
     Selesai: '#6FD36A', // Hijau dari palette
   };
 

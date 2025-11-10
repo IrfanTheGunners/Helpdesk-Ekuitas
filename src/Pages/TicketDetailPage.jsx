@@ -3,16 +3,25 @@ import { useParams, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../Components/layout/DashboardLayout';
 import initialTickets from '../data/tickets.json';
 import initialUsers from '../data/users.json';
-import { Send, UserCircle } from 'lucide-react';
+import { Send, UserCircle, FileText, MessageCircleMore } from 'lucide-react';
 import { translateStatus, translatePriority, translateCategory } from '../lib/translator';
 
 const getStatusBadge = (status) => {
     switch (status?.toLowerCase()) {
-      case 'open': return 'status-open bg-[#5A5858]/20 text-[#5A5858] border border-[#5A5858]';
-      case 'in progress': return 'status-in-progress bg-[#5A5858]/20 text-[#5A5858] border border-[#5A5858]';
-      case 'closed': return 'status-closed bg-[#5A5858]/20 text-[#5A5858] border border-[#5A5858]';
+      case 'open': return 'status-open bg-[#49B6B0]/20 text-[#49B6B0] border border-[#49B6B0]';
+      case 'in progress': return 'status-in-progress bg-[#1577B6]/20 text-[#1577B6] border border-[#1577B6]';
+      case 'closed': return 'status-closed bg-[#6FD36A]/20 text-[#6FD36A] border border-[#6FD36A]';
       default: return 'bg-gray-100 text-gray-800 border border-gray-200';
     }
+  };
+
+  const getPriorityBadge = (priority) => {
+      switch (priority?.toLowerCase()) {
+        case 'high': return 'border-red-500/50 text-red-400';
+        case 'medium': return 'border-yellow-500/50 text-yellow-400';
+        case 'low': return 'border-green-500/50 text-green-400';
+        default: return 'border-gray-500/50 text-gray-400';
+      }
   };
 
 const TicketDetailPage = () => {
@@ -54,6 +63,7 @@ const TicketDetailPage = () => {
         allNotifs.push({
             id: nextNotifId,
             userId: updatedTicket.userId, // Notify the user who created the ticket
+            type: 'ticket',
             message: notificationMessage,
             link: `/ticket/${updatedTicket.id}`,
             isRead: false,
@@ -95,8 +105,33 @@ const TicketDetailPage = () => {
         agentId: ticket.agentId || (currentUser.role === 'agent' ? currentUser.id : null)
     };
     setTicket(updatedTicket);
+    
+    // Create notification for the ticket owner
     const notifMessage = `Status tiket "${ticket.title}" diubah menjadi ${translateStatus(newStatus)}.`;
     updateTicketInStorage(updatedTicket, notifMessage);
+    
+    // Create notification for admins about status change if it's a significant change
+    if (newStatus === 'Closed' || newStatus === 'In Progress') {
+        const allNotifs = JSON.parse(localStorage.getItem('notifications')) || [];
+        const allUsers = JSON.parse(localStorage.getItem('users')) || [];
+        let nextNotifId = (allNotifs.length > 0 ? Math.max(...allNotifs.map(n => n.id)) : 0) + 1;
+        
+        const admins = allUsers.filter(u => u.role === 'admin' || u.role === 'superadmin');
+        admins.forEach(admin => {
+          allNotifs.push({
+            id: nextNotifId++,
+            userId: admin.id,
+            type: 'management',
+            message: `Tiket "${ticket.title}" statusnya diubah menjadi ${translateStatus(newStatus)} oleh ${currentUser.name}.`,
+            link: `/admin/tickets`,
+            isRead: false,
+            createdAt: new Date().toISOString(),
+          });
+        });
+        
+        localStorage.setItem('notifications', JSON.stringify(allNotifs));
+        window.dispatchEvent(new Event('notificationsUpdated'));
+    }
   }
 
   const handleDelete = () => {
@@ -119,108 +154,151 @@ const TicketDetailPage = () => {
     <DashboardLayout>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-            <div className='bg-white border border-gray-300 rounded-lg p-6 shadow-sm'>
-                <h1 className="text-3xl font-bold mb-2" style={{color: '#5A5858'}}>{ticket.title}</h1>
-                <p className="text-gray-600" style={{color: '#5A5858'}}>{ticket.description}</p>
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="bg-blue-100 p-3 rounded-lg">
+                <FileText size={24} className="text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <h1 className="text-2xl font-bold mb-2" style={{color: '#5A5858'}}>{ticket.title}</h1>
+                <p className="text-gray-700 leading-relaxed" style={{color: '#5A5858'}}>{ticket.description}</p>
+              </div>
             </div>
-
-            <h2 className="text-2xl font-semibold my-6" style={{color: '#5A5858'}}>Percakapan</h2>
-
-            <div className="space-y-6">
+            
+            <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-200">
+              <div className={`px-3 py-1 font-bold rounded-full text-sm ${getStatusBadge(ticket.status)}`}>
+                {translateStatus(ticket.status)}
+              </div>
+              <div className={`px-3 py-1 font-semibold rounded-full text-sm border ${getPriorityBadge(ticket.priority)}`}>
+                {translatePriority(ticket.priority)}
+              </div>
+              <span className="text-sm text-gray-600">
+                Dibuat: {new Date(ticket.createdAt).toLocaleDateString('id-ID')}
+              </span>
+            </div>
+            
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="bg-blue-100 p-2 rounded-lg">
+                  <MessageCircleMore size={24} className="text-blue-600" />
+                </div>
+                <h2 className="text-xl font-bold" style={{color: '#5A5858'}}>Percakapan</h2>
+              </div>
+              
+              <div className="space-y-6">
                 {ticket.comments.map(comment => (
-                    <div key={comment.id} className="flex gap-4">
-                        <UserCircle size={36} className="text-gray-500 mt-1"/>
-                        <div className="flex-1 bg-white border border-gray-300 rounded-lg p-4 shadow-sm">
-                            <div className="flex justify-between items-center mb-2">
-                                <p className="font-bold" style={{color: '#5A5858'}}>{getUserName(comment.userId)}</p>
-                                <p className="text-xs" style={{color: '#5A5858'}}>{new Date(comment.createdAt).toLocaleString('id-ID')}</p>
-                            </div>
-                            <p className="text-gray-700" style={{color: '#5A5858'}}>{comment.comment}</p>
-                        </div>
+                  <div key={comment.id} className="flex gap-4">
+                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                      <UserCircle size={20} className="text-gray-600"/>
                     </div>
+                    <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
+                      <div className="flex justify-between items-start mb-2">
+                        <p className="font-bold" style={{color: '#5A5858'}}>{getUserName(comment.userId)}</p>
+                        <p className="text-xs text-gray-500">{new Date(comment.createdAt).toLocaleString('id-ID')}</p>
+                      </div>
+                      <p className="text-gray-700" style={{color: '#5A5858'}}>{comment.comment}</p>
+                    </div>
+                  </div>
                 ))}
-            </div>
-
-            <div className="mt-8 flex gap-4">
-                 <UserCircle size={36} className="text-gray-500 mt-3"/>
-                 <div className="flex-1 relative">
+              </div>
+              
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-blue-100 p-2 rounded-lg">
+                    <Send size={24} className="text-blue-600" />
+                  </div>
+                  <h3 className="text-lg font-bold" style={{color: '#5A5858'}}>Tambahkan Balasan</h3>
+                </div>
+                
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                    <UserCircle size={20} className="text-gray-600"/>
+                  </div>
+                  <div className="flex-1 relative">
                     <textarea 
-                        className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-16" 
-                        placeholder="Ketik balasan Anda..."
-                        rows={3}
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        style={{color: '#5A5858'}}
+                      className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-16 h-24" 
+                      placeholder="Ketik balasan Anda..."
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      style={{color: '#5A5858'}}
                     />
-                    <button onClick={handleAddComment} className="absolute right-3 bottom-3 p-2 bg-blue-600 hover:bg-blue-700 rounded-full text-white">
-                        <Send size={20}/>
+                    <button 
+                      onClick={handleAddComment} 
+                      className="absolute right-3 bottom-3 p-2 bg-blue-600 hover:bg-blue-700 rounded-full text-white shadow-md"
+                    >
+                      <Send size={20}/>
                     </button>
-                 </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
 
         <div className="lg:col-span-1">
-          <div className="bg-white border border-gray-300 rounded-lg p-6 sticky top-24 shadow-sm">
-            <h2 className="text-2xl font-bold mb-6" style={{color: '#5A5858'}}>Detail Tiket</h2>
-            <div className="space-y-4">
-                <div>
-                    <h3 className="font-semibold mb-1" style={{color: '#5A5858'}}>Status</h3>
-                    {currentUser.role === 'agent' ? (
-                        <select onChange={handleStatusChange} value={ticket.status} className={`w-full px-3 py-2 text-md font-bold rounded-lg focus:outline-none ${getStatusBadge(ticket.status)} border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white`}>
-                            <option className="bg-white" style={{color: '#5A5858'}} value="Open">Terbuka</option>
-                            <option className="bg-white" style={{color: '#5A5858'}} value="In Progress">Dikerjakan</option>
-                            <option className="bg-white" style={{color: '#5A5858'}} value="Closed">Selesai</option>
-                        </select>
-                    ) : (
-                        <p className={`inline-block px-3 py-1 text-md font-bold rounded-full ${getStatusBadge(ticket.status)}`}>{translateStatus(ticket.status)}</p>
-                    )}
-                </div>
-                 <div>
-                    <h3 className="font-semibold mb-1" style={{color: '#5A5858'}}>Prioritas</h3>
-                    <p style={{color: '#5A5858'}}>{translatePriority(ticket.priority)}</p>
-                </div>
-                <div>
-                    <h3 className="font-semibold mb-1" style={{color: '#5A5858'}}>Waktu Penyelesaian (SLA)</h3>
-                    <div className="space-y-1">
-                        {ticket.priority === 'Tinggi' && (
-                            <p className="text-red-600 font-bold">1 jam</p>
-                        )}
-                        {ticket.priority === 'Sedang' && (
-                            <p className="text-yellow-600 font-bold">30 menit</p>
-                        )}
-                        {ticket.priority === 'Rendah' && (
-                            <p className="text-green-600 font-bold">15 menit</p>
-                        )}
-                    </div>
-                </div>
-                <div>
-                    <h3 className="font-semibold mb-1" style={{color: '#5A5858'}}>Kategori</h3>
-                    <p style={{color: '#5A5858'}}>{translateCategory(ticket.category)}</p>
-                </div>
-                <div>
-                    <h3 className="font-semibold mb-1" style={{color: '#5A5858'}}>Pembuat Tiket</h3>
-                    <p style={{color: '#5A5858'}}>{getUserName(ticket.userId)}</p>
-                </div>
-                <div>
-                    <h3 className="font-semibold mb-1" style={{color: '#5A5858'}}>Ditugaskan kepada</h3>
-                    <p className="font-semibold" style={{color: '#5A5858'}}>{getUserName(ticket.agentId)}</p>
-                </div>
-                 <div>
-                    <h3 className="font-semibold mb-1" style={{color: '#5A5858'}}>Dibuat Pada</h3>
-                    <p style={{color: '#5A5858'}}>{new Date(ticket.createdAt).toLocaleDateString('id-ID')}</p>
-                </div>
-
-                {/* Delete Button - only for ticket owner on closed tickets */}
-                {currentUser.id === ticket.userId && ticket.status === 'Closed' && (
-                    <div className="border-t border-gray-300 pt-4 mt-4">
-                        <button 
-                            onClick={handleDelete}
-                            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-300 transition-colors"
-                        >
-                            Hapus Tiket Ini
-                        </button>
-                    </div>
+          <div className="bg-white rounded-xl shadow-lg p-6 sticky top-24 border border-gray-200">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-blue-100 p-2 rounded-lg">
+                <FileText size={24} className="text-blue-600" />
+              </div>
+              <h2 className="text-xl font-bold" style={{color: '#5A5858'}}>Detail Tiket</h2>
+            </div>
+            
+            <div className="space-y-5">
+              <div className="pb-4 border-b border-gray-100">
+                <h3 className="font-semibold mb-2 text-gray-700" style={{color: '#5A5858'}}>Status</h3>
+                {currentUser.role === 'agent' ? (
+                  <select 
+                    onChange={handleStatusChange} 
+                    value={ticket.status} 
+                    className={`w-full px-3 py-2 text-md font-bold rounded-lg focus:outline-none ${getStatusBadge(ticket.status)} border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white`}
+                  >
+                    <option className="bg-white" style={{color: '#5A5858'}} value="Open">Terbuka</option>
+                    <option className="bg-white" style={{color: '#5A5858'}} value="In Progress">Dikerjakan</option>
+                    <option className="bg-white" style={{color: '#5A5858'}} value="Closed">Selesai</option>
+                  </select>
+                ) : (
+                  <p className={`inline-block px-3 py-1 text-md font-bold rounded-full ${getStatusBadge(ticket.status)}`}>{translateStatus(ticket.status)}</p>
                 )}
+              </div>
+              
+              <div className="pb-4 border-b border-gray-100">
+                <h3 className="font-semibold mb-2 text-gray-700" style={{color: '#5A5858'}}>Prioritas</h3>
+                <p className={`px-3 py-1 inline-block rounded-full ${getPriorityBadge(ticket.priority)} border`}>{translatePriority(ticket.priority)}</p>
+              </div>
+
+              
+              <div className="pb-4 border-b border-gray-100">
+                <h3 className="font-semibold mb-2 text-gray-700" style={{color: '#5A5858'}}>Kategori</h3>
+                <p className="bg-gray-100 px-3 py-1 rounded-full inline-block">{translateCategory(ticket.category)}</p>
+              </div>
+              
+              <div className="pb-4 border-b border-gray-100">
+                <h3 className="font-semibold mb-2 text-gray-700" style={{color: '#5A5858'}}>Pembuat Tiket</h3>
+                <p className="font-semibold text-gray-800" style={{color: '#5A5858'}}>{getUserName(ticket.userId)}</p>
+              </div>
+              
+              <div className="pb-4 border-b border-gray-100">
+                <h3 className="font-semibold mb-2 text-gray-700" style={{color: '#5A5858'}}>Ditugaskan kepada</h3>
+                <p className="font-semibold text-gray-800" style={{color: '#5A5858'}}>{getUserName(ticket.agentId)}</p>
+              </div>
+              
+              <div className="pb-4 border-b border-gray-100">
+                <h3 className="font-semibold mb-2 text-gray-700" style={{color: '#5A5858'}}>Dibuat Pada</h3>
+                <p className="text-gray-700">{new Date(ticket.createdAt).toLocaleDateString('id-ID')}</p>
+              </div>
+
+              {/* Delete Button - only for ticket owner on closed tickets */}
+              {currentUser.id === ticket.userId && ticket.status === 'Closed' && (
+                <div className="pt-4">
+                  <button 
+                    onClick={handleDelete}
+                    className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-300 transition-colors shadow-md"
+                  >
+                    Hapus Tiket Ini
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

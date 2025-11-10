@@ -183,7 +183,7 @@ const SystemControlPage = () => {
       {activeTab === 'user-management' && (
         <div className="space-y-6">
           {/* Create User Form */}
-          <div className="bg-white p-6 rounded-xl shadow-md border-r-4 border-r-[#5A5858]">
+          <div className="bg-white p-6 rounded-xl shadow-md">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2" style={{color: '#5A5858'}}>
               <UserPlus size={24} style={{color: '#5A5858'}} />
               Buat Pengguna Baru
@@ -230,7 +230,6 @@ const SystemControlPage = () => {
                     <option value="client">Client</option>
                     <option value="agent">Agent</option>
                     <option value="admin">Admin</option>
-                    <option value="superadmin">Super Admin</option>
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -251,7 +250,7 @@ const SystemControlPage = () => {
           </div>
 
           {/* User List */}
-          <div className="bg-white p-6 rounded-xl shadow-md border-r-4 border-r-[#5A5858]">
+          <div className="bg-white p-6 rounded-xl shadow-md">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
               <h2 className="text-xl font-semibold flex items-center gap-2" style={{color: '#5A5858'}}>
                 <Users size={24} style={{color: '#5A5858'}} />
@@ -316,9 +315,9 @@ const SystemControlPage = () => {
                           </div>
                           <button
                             onClick={() => handleDeleteUser(user.id, user.name, user.email)}
-                            className="text-xs bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded-lg flex items-center transition duration-200"
+                            className="text-xs bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
                           >
-                            <UserX size={12} />
+                            Hapus
                           </button>
                         </div>
                       </td>
@@ -339,7 +338,7 @@ const SystemControlPage = () => {
       {activeTab === 'system-tools' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* System Stats */}
-          <div className="bg-white p-6 rounded-xl shadow-md border-r-4 border-r-[#5A5858]">
+          <div className="bg-white p-6 rounded-xl shadow-md">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2" style={{color: '#5A5858'}}>
               <Database size={24} style={{color: '#5A5858'}} />
               Statistik Sistem
@@ -403,7 +402,7 @@ const SystemControlPage = () => {
           </div>
 
           {/* System Actions */}
-          <div className="bg-white p-6 rounded-xl shadow-md border-r-4 border-r-red-500">
+          <div className="bg-white p-6 rounded-xl shadow-md">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2" style={{color: '#5A5858'}}>
               <Settings size={24} style={{color: '#5A5858'}} />
               Aksi Sistem

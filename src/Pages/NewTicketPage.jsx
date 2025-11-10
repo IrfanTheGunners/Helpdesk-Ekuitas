@@ -51,6 +51,7 @@ const NewTicketPage = () => {
     allNotifs.push({
       id: nextNotifId++,
       userId: currentUser.id,
+      type: 'general',
       message: `Tiket "${title}" berhasil dibuat.`,
       link: `/ticket/${newTicket.id}`,
       isRead: false,
@@ -63,8 +64,23 @@ const NewTicketPage = () => {
       allNotifs.push({
         id: nextNotifId++,
         userId: agent.id,
+        type: 'ticket',
         message: `Tiket baru "${title}" dibuat oleh ${currentUser.name}.`,
         link: '/queue', // FIX: Link to the queue for agents
+        isRead: false,
+        createdAt: new Date().toISOString(),
+      });
+    });
+
+    // Create notifications for admins about new ticket
+    const admins = allUsers.filter(u => u.role === 'admin' || u.role === 'superadmin');
+    admins.forEach(admin => {
+      allNotifs.push({
+        id: nextNotifId++,
+        userId: admin.id,
+        type: 'management',
+        message: `Tiket baru "${title}" dibuat oleh ${currentUser.name}.`,
+        link: `/admin/tickets`,
         isRead: false,
         createdAt: new Date().toISOString(),
       });
@@ -76,7 +92,7 @@ const NewTicketPage = () => {
     window.dispatchEvent(new Event('ticketsUpdated'));
 
     alert('Tiket berhasil dibuat!'); // Keep alert for immediate feedback
-    window.location.href = '/tickets'; // Force a hard reload to guarantee data refresh
+    navigate('/tickets'); // Use React Router navigation instead of hard redirect
   };
 
   return (
@@ -136,24 +152,7 @@ const NewTicketPage = () => {
             </div>
           </div>
           
-          {/* SLA Information */}
-          <div className="mb-6 p-4 bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-            <h3 className="font-bold mb-2" style={{color: '#5A5858'}}>Waktu Penyelesaian (SLA)</h3>
-            <ul className="text-sm space-y-1">
-              <li className="flex items-start">
-                <span className="text-red-400 mr-2">•</span>
-                <span style={{color: '#5A5858'}}>Prioritas Tinggi: 1 jam</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-yellow-400 mr-2">•</span>
-                <span style={{color: '#5A5858'}}>Prioritas Sedang: 30 menit</span>
-              </li>
-              <li className="flex items-start">
-                <span className="text-green-400 mr-2">•</span>
-                <span style={{color: '#5A5858'}}>Prioritas Rendah: 15 menit</span>
-              </li>
-            </ul>
-          </div>
+
 
           <div className="mb-8">
             <label className="block text-sm font-bold mb-2" htmlFor="description" style={{color: '#5A5858'}}>
@@ -171,9 +170,8 @@ const NewTicketPage = () => {
 
           <div className="flex justify-end">
             <button 
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 shadow-md hover:shadow-lg"
-              type="submit"
-              style={{backgroundColor: '#0F50A1'}}>
+              className="bg-[#F6E603] hover:bg-yellow-300 text-[#0F50A1] font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 shadow-md hover:shadow-lg"
+              type="submit">
               Kirim Tiket
             </button>
           </div>

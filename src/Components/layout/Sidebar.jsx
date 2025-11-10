@@ -14,24 +14,30 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const agentLinks = [
     { icon: <LayoutDashboard size={20} />, name: 'Dasboard', path: '/dashboard' },
     { icon: <FolderKanban size={20} />, name: 'Antrian Tiket', path: '/queue' },
+    { icon: <FileText size={20} />, name: 'Laporan Unit', path: '/admin/unit-report' },
+  ];
+
+  const pimpinanLinks = [
+    { icon: <LayoutDashboard size={20} />, name: 'Dasbor', path: '/dashboard' },
+    { icon: <FileText size={20} />, name: 'Laporan Unit', path: '/admin/unit-report' },
   ];
 
   const adminLinks = [
-    { icon: <LayoutDashboard size={20} />, name: 'Dashboard', path: '/dashboard' },
+    { icon: <LayoutDashboard size={20} />, name: 'Dasbor', path: '/dashboard' },
     { icon: <FileText size={20} />, name: 'Tiket', path: '/admin/tickets' },
     { icon: <MessageCircleMore size={20} />, name: 'Monitoring Agent', path: '/admin/monitoring-agent' },
     { icon: <FileText size={20} />, name: 'Laporan Unit', path: '/admin/unit-report' },
   ];
   
   const superAdminLinks = [
-    { icon: <LayoutDashboard size={20} />, name: 'Dashboard', path: '/dashboard' },
+    { icon: <LayoutDashboard size={20} />, name: 'Dasbor', path: '/dashboard' },
     { icon: <FileText size={20} />, name: 'Tiket', path: '/admin/tickets' },
     { icon: <MessageCircleMore size={20} />, name: 'Monitoring Agent', path: '/admin/monitoring-agent' },
     { icon: <FileText size={20} />, name: 'Laporan Unit', path: '/admin/unit-report' },
-    { icon: <Shield size={20} />, name: 'System Control', path: '/admin/system-control' },
+    { icon: <Shield size={20} />, name: 'Pengaturan Sistem', path: '/admin/system-control' },
   ];
 
-  const navLinks = user?.role === 'agent' ? agentLinks : user?.role === 'admin' ? adminLinks : user?.role === 'superadmin' ? superAdminLinks : clientLinks;
+  const navLinks = user?.role === 'agent' ? agentLinks : user?.role === 'pimpinan' ? pimpinanLinks : user?.role === 'admin' ? adminLinks : user?.role === 'superadmin' ? superAdminLinks : clientLinks;
 
   return (
     <>
@@ -49,18 +55,18 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
 
         <aside className={`
 
-fixed inset-y-0 left-0 w-64 max-w-[80%] bg-[#0F50A1] text-white flex flex-col transform transition-transform duration-300 ease-in-out z-50 h-screen ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
+fixed inset-y-0 left-0 w-64 max-w-[80%] bg-[#0F50A1] text-white flex flex-col transform transition-transform duration-300 ease-in-out z-50 h-screen border-r border-white/20 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
         {/* Logo and Close button */}
         <div className="p-4 md:p-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
                      <img
-              src="/src/assets/ekuitas-new.png"
+              src="/ekuitas-new.png"
               alt="Logo Ekuitas"
-              className="h-8 w-8 shadow-lg rounded-full"
+              className="h-10 w-10 shadow-lg rounded-full"
             />
                 </div>
-                <h1 className="text-xl font-bold text-white">Helpdesk</h1>
+                <h1 className="text-lg font-bold text-white">Helpdesk Ekuitas</h1>
             </div>
             <button 
               onClick={() => setIsSidebarOpen(false)} 
