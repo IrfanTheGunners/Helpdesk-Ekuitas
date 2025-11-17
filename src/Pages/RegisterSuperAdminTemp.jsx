@@ -66,7 +66,9 @@ const RegisterSuperAdminTemp = () => {
       email,
       password,
       profileImage: '/src/assets/default-avatar.png',
-      role: 'superadmin'
+      role: 'superadmin',
+      unit: 'Belum Ditentukan', // Unit akan ditentukan oleh super admin nanti (mungkin untuk diri sendiri)
+      category: 'Belum Ditentukan' // Kategori juga akan ditentukan kemudian
     };
 
     // Simpan ke localStorage
@@ -137,6 +139,11 @@ const RegisterSuperAdminTemp = () => {
                 />
               </div>
             </div>
+            
+
+
+
+            
             <div className="mb-4">
               <label className="block text-gray-600 text-sm font-bold mb-2" style={{color: '#5A5858'}} htmlFor="email">
                 Email

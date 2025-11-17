@@ -45,6 +45,7 @@ const RegisterPage = () => {
       password,
       profileImage: '/src/assets/default-avatar.png', // Default profile image
       role: 'client', // FIX: All new registrations are clients by default
+      unit: 'Belum Ditentukan' // Default unit for all new users
     };
 
     const updatedUsers = [...users, newUser];
@@ -144,6 +145,7 @@ const RegisterPage = () => {
                 </button>
               </div>
             </div>
+
             <button 
               className="w-full bg-[#F6E603] hover:bg-yellow-300 text-[#0F50A1] font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 shadow-md hover:shadow-lg"
               type="submit">

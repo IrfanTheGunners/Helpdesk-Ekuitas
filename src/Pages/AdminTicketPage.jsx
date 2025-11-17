@@ -3,7 +3,7 @@ import DashboardLayout from '../Components/layout/DashboardLayout';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Search, Filter, PlusCircle } from 'lucide-react';
 import initialTickets from '../data/tickets.json';
-import { translateStatus } from '../lib/translator';
+import { translateStatus, translateCategory } from '../lib/translator';
 
 const AdminTicketPage = () => {
   const [tickets, setTickets] = useState([]);
@@ -11,7 +11,19 @@ const AdminTicketPage = () => {
   const [filteredTickets, setFilteredTickets] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState({ status: 'all', category: 'all', assignee: 'all' });
+  const [allCategories, setAllCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Load categories from localStorage
+    const storedCategories = JSON.parse(localStorage.getItem('categories')) || [
+      'Teknis',
+      'Tagihan', 
+      'Umum'
+    ];
+    setAllCategories(storedCategories);
+  }, []);
 
   useEffect(() => {
     const allTickets = JSON.parse(localStorage.getItem('tickets')) || initialTickets;
@@ -112,7 +124,9 @@ const AdminTicketPage = () => {
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const isSuperAdmin = currentUser?.role === 'superadmin';
   
-  const categories = [...new Set(tickets.map(ticket => ticket.category))].filter(cat => cat);
+  const allPossibleCategories = ['Umum']; // Daftar semua kategori yang mungkin
+  const ticketCategories = [...new Set(tickets.map(ticket => ticket.category))].filter(cat => cat);
+  const uniqueTicketCategories = [...new Set([...allPossibleCategories, ...ticketCategories])].sort();
   const agents = users.filter(user => user.role === 'agent');
   const regularAdmins = users.filter(user => user.role === 'admin');
   
@@ -151,6 +165,22 @@ const AdminTicketPage = () => {
       setUsers(updatedUsers); // Update state
       alert('Pengguna berhasil dihapus');
     }
+  };
+
+  const addCategory = (categoryName) => {
+    if (!categoryName.trim()) {
+      alert('Nama kategori tidak boleh kosong');
+      return;
+    }
+
+    if (allCategories.includes(categoryName.trim())) {
+      alert('Kategori sudah ada');
+      return;
+    }
+
+    const updatedCategories = [...allCategories, categoryName.trim()];
+    setAllCategories(updatedCategories);
+    localStorage.setItem('categories', JSON.stringify(updatedCategories));
   };
 
   return (
@@ -208,14 +238,24 @@ const AdminTicketPage = () => {
               </div>
               <select
                 value={filter.category}
-                onChange={(e) => handleFilterChange('category', e.target.value)}
+                onChange={(e) => {
+                  if (e.target.value === 'add-new') {
+                    const categoryName = prompt('Masukkan nama kategori baru:');
+                    if (categoryName) {
+                      addCategory(categoryName);
+                    }
+                  } else {
+                    handleFilterChange('category', e.target.value);
+                  }
+                }}
                 className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 pl-8 pr-8 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5A5858] focus:border-[#5A5858] appearance-none transition duration-200"
                 style={{color: '#5A5858'}}
               >
                 <option value="all">Kategori</option>
-                {categories.map(category => (
-                  <option key={category} value={category}>{translateStatus(category)}</option>
+                {allCategories.map(category => (
+                  <option key={category} value={category}>{translateCategory(category)}</option>
                 ))}
+                <option value="add-new">+ Tambah Kategori Baru</option>
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -327,6 +367,7 @@ const AdminTicketPage = () => {
                 <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Kategori</th>
                 <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Status</th>
                 <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Pengguna</th>
+                <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Unit</th>
                 <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Agent</th>
                 <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Tanggal</th>
                 <th className="py-2 px-4 text-center" style={{color: '#5A5858'}}>Aksi</th>
@@ -350,13 +391,14 @@ const AdminTicketPage = () => {
                       >
                         {ticket.title}
                       </td>
-                      <td className="py-2 px-4" style={{color: '#5A5858'}}>{translateStatus(ticket.category)}</td>
+                      <td className="py-2 px-4" style={{color: '#5A5858'}}>{translateCategory(ticket.category)}</td>
                       <td className="py-2 px-4">
                         <span className="px-2 py-1 rounded text-xs font-semibold" style={{backgroundColor: getStatusBadge(ticket.status), color: 'white'}}>
                           {translateStatus(ticket.status)}
                         </span>
                       </td>
                       <td className="py-2 px-4" style={{color: '#5A5858'}}>{user ? user.name : 'Tidak Diketahui'}</td>
+                      <td className="py-2 px-4" style={{color: '#5A5858'}}>{user ? user.unit || 'Unit Tidak Diketahui' : 'Unit Tidak Diketahui'}</td>
                       <td className="py-2 px-4" style={{color: '#5A5858'}}>{getAgentName(ticket.agentId)}</td>
                       <td className="py-2 px-4" style={{color: '#5A5858'}}>{new Date(ticket.createdAt).toLocaleDateString()}</td>
                       <td className="py-2 px-4 text-center">

@@ -272,6 +272,8 @@ const AdminMonitoringAgentPage = () => {
             <thead>
               <tr className="border-b border-gray-300">
                 <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Nama Agent</th>
+                <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Unit</th>
+                <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Kategori</th>
                 <th className="py-2 px-4 text-center" style={{color: '#5A5858'}}>Tiket Terbuka</th>
                 <th className="py-2 px-4 text-center" style={{color: '#5A5858'}}>Sedang Diproses</th>
                 <th className="py-2 px-4 text-center" style={{color: '#5A5858'}}>Selesai</th>

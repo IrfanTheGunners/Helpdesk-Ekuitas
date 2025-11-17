@@ -4,7 +4,7 @@ import LandingPage from './Pages/LandingPage';
 import LoginPage from './Pages/Login';
 import RegisterPage from './Pages/Register';
 import PimpinanRegisterPage from './Pages/PimpinanRegisterPage';
-import RegisterAdminPage from './Pages/RegisterAdminPage';
+
 import Dashboard from './Pages/Dashboard';
 import ProfilePage from './Pages/ProfilePage';
 import TicketListPage from './Pages/TicketListPage';
@@ -57,7 +57,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/register-pimpinan" element={<PimpinanRegisterPage />} />
-        <Route path="/register-admin" element={<RegisterAdminPage />} />
+
         <Route path="/admin/tickets" element={
           <ProtectedRoute>
             <AdminTicketPage />
@@ -82,7 +82,7 @@ function App() {
         } />
 
         <Route 
-          path="/dashboard" 
+          path="/Dashboard" 
           element={
             <ProtectedRoute>
               <Dashboard />

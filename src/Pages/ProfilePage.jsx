@@ -156,6 +156,19 @@ const ProfilePage = () => {
             />
           </div>
 
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="unit">
+              Unit
+            </label>
+            <input
+              className="w-full bg-gray-100 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 cursor-not-allowed"
+              id="unit"
+              type="text"
+              value={currentUser.unit || 'Unit tidak ditentukan'}
+              readOnly
+            />
+          </div>
+
           <hr className="border-gray-300 my-8" />
 
           <h2 className="text-xl font-semibold mb-4 text-gray-800">Ubah Password</h2>

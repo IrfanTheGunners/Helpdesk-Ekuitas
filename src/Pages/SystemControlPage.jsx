@@ -9,8 +9,19 @@ const SystemControlPage = () => {
     name: '',
     email: '',
     role: 'client',
-    password: ''
+    password: '',
+    unit: '',
+    category: ''
   });
+  
+  // Fungsi untuk mendapatkan daftar unit unik dari pengguna
+  const getUniqueUnits = () => {
+    const uniqueUnits = [...new Set(users.map(user => user.unit).filter(unit => unit && unit !== 'Belum Ditentukan' && unit !== 'Unit Tidak Diketahui'))];
+    return uniqueUnits;
+  };
+  
+  // Daftar unit yang sudah ada
+  const uniqueUnits = getUniqueUnits();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('user-management');
 
@@ -73,13 +84,15 @@ const SystemControlPage = () => {
       name: newUserData.name,
       email: newUserData.email,
       password: newUserData.password,
-      role: newUserData.role
+      role: newUserData.role,
+      unit: newUserData.role !== 'client' ? (newUserData.unit || 'Belum Ditentukan') : 'Belum Ditentukan',
+      category: newUserData.role !== 'client' ? (newUserData.category || 'Belum Ditentukan') : 'Belum Ditentukan'
     };
 
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
     setUsers(users);
-    setNewUserData({ name: '', email: '', role: 'client', password: '' });
+    setNewUserData({ name: '', email: '', role: 'client', password: '', unit: '', category: '' });
     alert('Pengguna baru berhasil dibuat');
   };
 
@@ -169,6 +182,15 @@ const SystemControlPage = () => {
           </div>
         </button>
         <button
+          className={`py-3 px-6 font-medium rounded-lg transition-all duration-300 ${activeTab === 'unit-management' ? 'bg-[#5A5858] text-white shadow-md' : 'text-[#5A5858] hover:bg-gray-100'}`}
+          onClick={() => setActiveTab('unit-management')}
+        >
+          <div className="flex items-center gap-2">
+            <Shield size={18} style={{color: activeTab === 'unit-management' ? 'white' : '#5A5858'}} />
+            <span style={{color: activeTab === 'unit-management' ? 'white' : '#5A5858'}}>Manajemen Unit</span>
+          </div>
+        </button>
+        <button
           className={`py-3 px-6 font-medium rounded-lg transition-all duration-300 ${activeTab === 'system-tools' ? 'bg-[#5A5858] text-white shadow-md' : 'text-[#5A5858] hover:bg-gray-100'}`}
           onClick={() => setActiveTab('system-tools')}
         >
@@ -224,7 +246,19 @@ const SystemControlPage = () => {
                 <div className="relative">
                   <select
                     value={newUserData.role}
-                    onChange={(e) => setNewUserData({...newUserData, role: e.target.value})}
+                    onChange={(e) => {
+                      const selectedRole = e.target.value;
+                      if (selectedRole === 'client') {
+                        setNewUserData({
+                          ...newUserData,
+                          role: selectedRole,
+                          unit: 'Belum Ditentukan',
+                          category: 'Belum Ditentukan'
+                        });
+                      } else {
+                        setNewUserData({...newUserData, role: selectedRole});
+                      }
+                    }}
                     className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5A5858] focus:border-[#5A5858] appearance-none transition duration-200"
                   >
                     <option value="client">Client</option>
@@ -238,7 +272,71 @@ const SystemControlPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="md:col-span-2">
+              {newUserData.role !== 'client' && (
+                <>
+                  <div>
+                    <label className="block text-gray-600 text-sm mb-2 font-medium" style={{color: '#5A5858'}}>Unit</label>
+                <div className="relative">
+                  <select
+                    value={newUserData.unit}
+                    onChange={(e) => setNewUserData({...newUserData, unit: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5A5858] focus:border-[#5A5858] appearance-none transition duration-200"
+                  >
+                    <option value="">Pilih Unit</option>
+                    <option value="Fakultas Ilmu Komputer">Fakultas Ilmu Komputer</option>
+                    <option value="Fakultas Ekonomi">Fakultas Ekonomi</option>
+                    <option value="Fakultas Hukum">Fakultas Hukum</option>
+                    <option value="Fakultas Teknik">Fakultas Teknik</option>
+                    <option value="Fakultas Kedokteran">Fakultas Kedokteran</option>
+                    <option value="Bagian Keuangan">Bagian Keuangan</option>
+                    <option value="Bagian Kepegawaian">Bagian Kepegawaian</option>
+                    <option value="Bagian Administrasi">Bagian Administrasi</option>
+                    <option value="Perpustakaan">Perpustakaan</option>
+                    <option value="Pusat Laboratorium">Pusat Laboratorium</option>
+                    <option value="Pusat Penelitian">Pusat Penelitian</option>
+                    <option value="Bagian IT">Bagian IT</option>
+                    {uniqueUnits.map((unit, index) => (
+                      <option key={index} value={unit}>{unit}</option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Kategori */}
+              <div>
+                <label className="block text-gray-600 text-sm mb-2 font-medium" style={{color: '#5A5858'}}>Kategori</label>
+                <div className="relative">
+                  <select
+                    value={newUserData.category}
+                    onChange={(e) => setNewUserData({...newUserData, category: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5A5858] focus:border-[#5A5858] appearance-none transition duration-200"
+                  >
+                    <option value="">Pilih Kategori</option>
+                    <option value="Akademik">Akademik</option>
+                    <option value="Administrasi">Administrasi</option>
+                    <option value="Keuangan">Keuangan</option>
+                    <option value="Kepegawaian">Kepegawaian</option>
+                    <option value="IT">IT</option>
+                    <option value="Penelitian">Penelitian</option>
+                    <option value="Kemahasiswaan">Kemahasiswaan</option>
+                    <option value="Fasilitas">Fasilitas</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </>
+            )}
+            
+            <div className="md:col-span-2">
                 <button
                   type="submit"
                   className="w-full bg-[#5A5858] hover:bg-[#4A4848] text-white font-medium py-3 px-4 rounded-lg transition duration-300 shadow-md hover:shadow-lg"
@@ -280,6 +378,8 @@ const SystemControlPage = () => {
                     <th className="py-3 px-4 text-left font-medium" style={{color: '#5A5858'}}>Nama</th>
                     <th className="py-3 px-4 text-left font-medium" style={{color: '#5A5858'}}>Email</th>
                     <th className="py-3 px-4 text-left font-medium" style={{color: '#5A5858'}}>Peran</th>
+                    <th className="py-3 px-4 text-left font-medium" style={{color: '#5A5858'}}>Unit</th>
+                    <th className="py-3 px-4 text-left font-medium" style={{color: '#5A5858'}}>Kategori</th>
                     <th className="py-3 px-4 text-center font-medium" style={{color: '#5A5858'}}>Aksi</th>
                   </tr>
                 </thead>
@@ -294,6 +394,8 @@ const SystemControlPage = () => {
                           {user.role}
                         </span>
                       </td>
+                      <td className="py-3 px-4" style={{color: '#5A5858'}}>{user.unit || 'Belum Ditentukan'}</td>
+                      <td className="py-3 px-4" style={{color: '#5A5858'}}>{user.category || 'Belum Ditentukan'}</td>
                       <td className="py-3 px-4 text-center">
                         <div className="flex justify-center gap-2">
                           <div className="relative">
@@ -329,6 +431,143 @@ const SystemControlPage = () => {
 
             {filteredUsers.length === 0 && (
               <p className="text-gray-500 text-center py-6">Tidak ada pengguna ditemukan</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Unit Management Tab */}
+      {activeTab === 'unit-management' && (
+        <div className="space-y-6">
+          {/* Create/Edit Unit Form */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2" style={{color: '#5A5858'}}>
+              <Shield size={24} style={{color: '#5A5858'}} />
+              Tambah Unit Baru
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="md:col-span-2">
+                <label className="block text-gray-600 text-sm mb-2 font-medium" style={{color: '#5A5858'}}>Nama Unit</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={newUserData.unit}
+                    onChange={(e) => setNewUserData({...newUserData, unit: e.target.value})}
+                    className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5A5858] focus:border-[#5A5858] transition duration-200"
+                    placeholder="Nama unit baru (misal: Fakultas Ilmu Komputer, Bagian Keuangan, dll)"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button
+                type="button"
+                className="bg-[#5A5858] hover:bg-[#4A4848] text-white font-medium py-2 px-4 rounded-lg transition duration-300 shadow-md hover:shadow-lg"
+                onClick={() => {
+                  if (newUserData.unit.trim() === '') {
+                    alert('Silakan masukkan nama unit');
+                    return;
+                  }
+                  
+                  // Tambah unit ke dalam localStorage 
+                  const users = JSON.parse(localStorage.getItem('users')) || [];
+                  const hasExistingUser = users.some(user => user.unit === newUserData.unit);
+                  
+                  if (!hasExistingUser) {
+                    // Tambahkan dummy user untuk menyimpan unit
+                    const dummyUser = {
+                      id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
+                      name: `Dummy - ${newUserData.unit}`,
+                      email: `dummy+${newUserData.unit.replace(/\s+/g, '')}@example.com`,
+                      password: 'dummy',
+                      role: 'client',
+                      unit: newUserData.unit
+                    };
+                    
+                    users.push(dummyUser);
+                    localStorage.setItem('users', JSON.stringify(users));
+                    setUsers(users);
+                  }
+                  
+                  alert(`Unit "${newUserData.unit}" berhasil ditambahkan!`);
+                  setNewUserData({...newUserData, unit: ''});
+                }}
+              >
+                Tambahkan Unit
+              </button>
+            </div>
+          </div>
+
+          {/* Unit List */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2" style={{color: '#5A5858'}}>
+                <Shield size={24} style={{color: '#5A5858'}} />
+                Daftar Unit
+              </h2>
+              <div className="mt-2 md:mt-0 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Cari unit..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 rounded-lg py-2 pl-10 pr-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#5A5858] focus:border-[#5A5858] transition duration-200"
+                />
+              </div>
+            </div>
+
+            <div className="overflow-x-auto rounded-lg border border-gray-300">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50">
+                  <tr className="border-b border-gray-300">
+                    <th className="py-3 px-4 text-left font-medium" style={{color: '#5A5858'}}>ID</th>
+                    <th className="py-3 px-4 text-left font-medium" style={{color: '#5A5858'}}>Nama Unit</th>
+                    <th className="py-3 px-4 text-center font-medium" style={{color: '#5A5858'}}>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.from(new Set(users.map(user => user.unit).filter(unit => unit))).map((unit, index) => (
+                    <tr key={index} className={`border-b border-gray-300 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors duration-150`}>
+                      <td className="py-3 px-4 font-mono" style={{color: '#5A5858'}}>{index + 1}</td>
+                      <td className="py-3 px-4 font-medium" style={{color: '#5A5858'}}>{unit}</td>
+                      <td className="py-3 px-4 text-center">
+                        <div className="flex justify-center gap-2">
+                          <button
+                            onClick={() => {
+                              setNewUserData({...newUserData, unit: unit});
+                              setActiveTab('user-management');
+                              alert('Unit dipilih, Anda bisa membuat pengguna dengan unit ini');
+                            }}
+                            className="text-xs bg-yellow-600 hover:bg-yellow-700 text-white px-2 py-1 rounded"
+                          >
+                            Gunakan
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (window.confirm(`Anda yakin ingin menghapus unit ${unit}?`)) {
+                                // Ini adalah fitur sederhana; dalam aplikasi nyata, Anda mungkin ingin menghapus unit hanya jika tidak ada pengguna yang terdaftar di unit tersebut
+                                alert('Fitur ini membutuhkan implementasi server-side untuk keamanan. Dalam aplikasi ini, unit tidak dihapus secara permanen.');
+                              }
+                            }}
+                            className="text-xs bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {Array.from(new Set(users.map(user => user.unit).filter(unit => unit))).length === 0 && (
+              <p className="text-gray-500 text-center py-6">Tidak ada unit ditemukan</p>
             )}
           </div>
         </div>

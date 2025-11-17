@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../Components/layout/DashboardLayout';
 import initialTickets from '../data/tickets.json';
@@ -10,6 +10,21 @@ const NewTicketPage = () => {
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Teknis');
+  const [availableCategories, setAvailableCategories] = useState([]);
+
+  useEffect(() => {
+    // Load available categories from localStorage or use defaults
+    const storedCategories = JSON.parse(localStorage.getItem('categories')) || [
+      'Teknis',
+      'Tagihan', 
+      'Umum'
+    ];
+    setAvailableCategories(storedCategories);
+    // Set default category if current category is not in the list
+    if (!storedCategories.includes('Teknis')) {
+      setCategory(storedCategories[0] || '');
+    }
+  }, []);
   const [priority, setPriority] = useState('Rendah');
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
@@ -98,7 +113,7 @@ const NewTicketPage = () => {
   return (
     <DashboardLayout>
       <h1 className="text-3xl font-bold mb-6">Buat Tiket Baru</h1>
-      <div className="bg-white border border-gray-300 rounded-lg p-8 max-w-4xl mx-auto shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <div className="bg-white border border-gray-300 rounded-lg p-8 max-w-4xl mx-auto shadow-lg hover:shadow-xl">
         <form onSubmit={handleSubmit}>
           {error && <p className="bg-red-500/20 text-red-300 text-sm rounded-lg p-3 text-center mb-4">{error}</p>}
           
@@ -107,7 +122,7 @@ const NewTicketPage = () => {
               Judul Tiket
             </label>
             <input 
-              className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm hover:shadow-md transition-shadow duration-300" 
+              className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm hover:shadow-md" 
               id="title" 
               type="text" 
               placeholder="Contoh: Tidak bisa login ke aplikasi mobile"
@@ -124,14 +139,14 @@ const NewTicketPage = () => {
               </label>
               <select 
                 id="category"
-                className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm hover:shadow-md transition-shadow duration-300"
+                className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm hover:shadow-md"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 style={{color: '#5A5858'}}
               >
-                <option>Teknis</option>
-                <option>Tagihan</option>
-                <option>Umum</option>
+                {availableCategories.map((cat, index) => (
+                  <option key={index} value={cat}>{cat}</option>
+                ))}
               </select>
             </div>
             <div>
@@ -140,7 +155,7 @@ const NewTicketPage = () => {
               </label>
               <select 
                 id="priority"
-                className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm hover:shadow-md transition-shadow duration-300"
+                className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm hover:shadow-md"
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
                 style={{color: '#5A5858'}}
@@ -159,7 +174,7 @@ const NewTicketPage = () => {
               Deskripsi Masalah
             </label>
             <textarea 
-              className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 h-40 resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm hover:shadow-md transition-shadow duration-300" 
+              className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 h-40 resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm hover:shadow-md" 
               id="description" 
               placeholder="Jelaskan masalah yang Anda hadapi secara detail..."
               value={description}
@@ -170,7 +185,7 @@ const NewTicketPage = () => {
 
           <div className="flex justify-end">
             <button 
-              className="bg-[#F6E603] hover:bg-yellow-300 text-[#0F50A1] font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 shadow-md hover:shadow-lg"
+              className="bg-[#F6E603] hover:bg-yellow-300 text-[#0F50A1] font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline shadow-md hover:shadow-lg"
               type="submit">
               Kirim Tiket
             </button>

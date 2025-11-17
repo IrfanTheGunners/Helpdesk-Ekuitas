@@ -45,6 +45,12 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
           a.active svg {
             color: #000000 !important;
           }
+          body {
+            overscroll-behavior: contain;
+          }
+          * {
+            -webkit-overflow-scrolling: touch;
+          }
         `}</style>
         
         {/* Overlay for mobile */}
@@ -55,7 +61,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
 
         <aside className={`
 
-fixed inset-y-0 left-0 w-64 max-w-[80%] bg-[#0F50A1] text-white flex flex-col transform transition-transform duration-300 ease-in-out z-50 h-screen border-r border-white/20 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
+fixed inset-y-0 left-0 w-64 max-w-[80%] bg-[#0F50A1] text-white flex flex-col z-50 h-screen border-r border-white/20 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
         {/* Logo and Close button */}
         <div className="p-4 md:p-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -86,7 +92,7 @@ fixed inset-y-0 left-0 w-64 max-w-[80%] bg-[#0F50A1] text-white flex flex-col tr
                     to={link.path}
                     onClick={() => setIsSidebarOpen(false)} // Close sidebar on link click
                     className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-3 my-1 rounded-lg transition-colors duration-200 ${
+                    `flex items-center gap-3 px-4 py-3 my-1 rounded-lg ${
                         isActive
                         ? 'bg-white text-black'
                         : 'hover:bg-gray-200/50 text-white'

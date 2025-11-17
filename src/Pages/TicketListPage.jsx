@@ -17,10 +17,14 @@ const getStatusBadge = (status) => {
 };
 
 const getPriorityBadge = (priority) => {
-    switch (priority?.toLowerCase()) {
-      case 'high': return 'border-red-500/50 text-red-400';
-      case 'medium': return 'border-yellow-500/50 text-yellow-400';
-      case 'low': return 'border-green-500/50 text-green-400';
+    const normalizedPriority = priority?.toLowerCase();
+    switch (normalizedPriority) {
+      case 'high':
+      case 'tinggi': return 'border-red-500/50 text-red-400';
+      case 'medium':
+      case 'sedang': return 'border-yellow-500/50 text-yellow-400';
+      case 'low':
+      case 'rendah': return 'border-green-500/50 text-green-400';
       default: return 'border-gray-500/50 text-gray-400';
     }
   };
@@ -49,6 +53,16 @@ const TicketListPage = () => {
 
   const isAgent = currentUser?.role === 'agent';
 
+  // Helper function to map Indonesian priority values to English for comparison
+  const mapPriorityToEnglish = (priority) => {
+    switch(priority?.toLowerCase()) {
+      case 'rendah': return 'Low';
+      case 'sedang': return 'Medium';
+      case 'tinggi': return 'High';
+      default: return priority; // If already in English format
+    }
+  };
+
   const filteredTickets = allTickets
     .filter(ticket => isAgent || ticket.userId === currentUser?.id)
     .filter(ticket => {
@@ -62,7 +76,7 @@ const TicketListPage = () => {
     })
     .filter(ticket => {
       if (priorityFilter === 'all') return true;
-      return ticket.priority === priorityFilter;
+      return mapPriorityToEnglish(ticket.priority) === priorityFilter;
     });
 
   // Pagination calculations
@@ -128,6 +142,7 @@ const TicketListPage = () => {
           <table className="w-full text-left">
             <thead className="bg-[#f9fafb]">
               <tr className="border-b border-gray-200">
+                <th className="py-4 px-6 font-semibold text-gray-700">ID Tiket</th>
                 <th className="py-4 px-6 font-semibold text-gray-700">Judul</th>
                 {isAgent && <th className="py-4 px-6 font-semibold text-gray-700">Pembuat</th>}
                 <th className="py-4 px-6 font-semibold text-gray-700">Kategori</th>
@@ -138,12 +153,13 @@ const TicketListPage = () => {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {currentTickets.length > 0 ? currentTickets.map(ticket => (
-                <tr 
-                  key={ticket.id} 
-                  className="hover:bg-gray-50 cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md rounded-lg mx-2"
+                <tr
+                  key={ticket.id}
+                  className="hover:bg-gray-50 cursor-pointer shadow-sm hover:shadow-md rounded-lg mx-2"
                   onClick={() => navigate(`/ticket/${ticket.id}`)}
                   style={{backgroundColor: 'white'}}
                 >
+                  <td className="py-4 px-6 font-medium text-gray-800">#{ticket.id}</td>
                   <td className="py-4 px-6 font-medium text-gray-800 hover:underline">{ticket.title}</td>
                   {isAgent && <td className="py-4 px-6 text-gray-700">{getUserName(ticket.userId)}</td>}
                   <td className="py-4 px-6 text-gray-700">{ticket.category || 'N/A'}</td>
@@ -161,7 +177,7 @@ const TicketListPage = () => {
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={isAgent ? 7 : 6} className="text-center py-12" style={{backgroundColor: 'white'}}>
+                  <td colSpan={isAgent ? 8 : 7} className="text-center py-12" style={{backgroundColor: 'white'}}>
                     <div className="flex flex-col items-center justify-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
