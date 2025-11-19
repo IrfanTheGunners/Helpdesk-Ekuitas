@@ -176,8 +176,6 @@ const TicketDetailPage = () => {
 
   const getUserName = (userId) => users.find(u => u.id === userId)?.name || 'Belum Ditugaskan';
   
-  const getUserUnit = (userId) => users.find(u => u.id === userId)?.unit || 'Unit Tidak Diketahui';
-
   if (!ticket || !currentUser) {
     return <DashboardLayout><p>Memuat tiket...</p></DashboardLayout>;
   }
@@ -371,10 +369,6 @@ const TicketDetailPage = () => {
                 <p className="font-semibold text-gray-800" style={{color: '#5A5858'}}>{getUserName(ticket.userId)}</p>
               </div>
 
-              <div className="pb-4 border-b border-gray-100">
-                <h3 className="font-semibold mb-2 text-gray-700" style={{color: '#5A5858'}}>Unit Pembuat</h3>
-                <p className="font-semibold text-gray-800" style={{color: '#5A5858'}}>{getUserUnit(ticket.userId)}</p>
-              </div>
               
               <div className="pb-4 border-b border-gray-100">
                 <h3 className="font-semibold mb-2 text-gray-700" style={{color: '#5A5858'}}>Ditugaskan kepada</h3>
