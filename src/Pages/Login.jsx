@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react'; // Import ikon mata
-import initialUsers from '../data/users.json'; 
+import initialUsers from '../data/users.json';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -17,7 +17,7 @@ const LoginPage = () => {
     const users = JSON.parse(localStorage.getItem('users')) || [];
 
     const user = users.find(u => u.email === email && u.password === password);
-    
+
     if (user) {
       localStorage.setItem('user', JSON.stringify(user));
       navigate('/dashboard');
@@ -39,7 +39,7 @@ const LoginPage = () => {
             <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">Selamat Datang di Helpdesk</h2>
             <p className="text-center text-gray-600 mb-8">Masuk ke akun Anda untuk melanjutkan</p>
           </div>
-          
+
           {error && <p className="bg-red-100 text-red-700 text-sm rounded-lg p-3 text-center mb-4">{error}</p>}
 
           <form onSubmit={handleLogin}>
@@ -47,10 +47,10 @@ const LoginPage = () => {
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
                 Email
               </label>
-              <input 
-                className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                id="email" 
-                type="email" 
+              <input
+                className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                id="email"
+                type="email"
                 placeholder="kamu@contoh.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -62,10 +62,10 @@ const LoginPage = () => {
                 Password
               </label>
               <div className="relative">
-                <input 
-                  className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10" 
-                  id="password" 
-                  type={showPassword ? "text" : "password"} 
+                <input
+                  className="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                  id="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -80,10 +80,7 @@ const LoginPage = () => {
                 </button>
               </div>
             </div>
-            <div className="flex items-center justify-between mb-6">
-              <a href="#" className="text-sm text-[#1577B6] hover:text-[#0F50A1]">Lupa Password?</a>
-            </div>
-            <button 
+            <button
               className="w-full bg-[#F6E603] hover:bg-yellow-300 text-[#0F50A1] font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300 shadow-md hover:shadow-lg"
               type="submit">
               Masuk

@@ -4,7 +4,7 @@ import DashboardLayout from '../Components/layout/DashboardLayout';
 
 const ProfilePage = () => {
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user')));
-  
+
   const [name, setName] = useState(currentUser.name);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,7 +21,7 @@ const ProfilePage = () => {
       return;
     }
 
-    
+
     const loggedInUserSession = JSON.parse(localStorage.getItem('user'));
     if (!loggedInUserSession) {
         setMessage({ type: 'error', text: 'Sesi Anda tidak valid. Silakan login ulang.' });
@@ -43,6 +43,11 @@ const ProfilePage = () => {
         profileImage: profileImage
     };
 
+    // Jika user adalah agent, tetap jaga nilai unit
+    if (allUsers[userIndex].role === 'agent') {
+        updatedUser.unit = allUsers[userIndex].unit;
+    }
+
     if (password) {
       updatedUser.password = password; // In a real app, this should be hashed!
     }
@@ -58,12 +63,12 @@ const ProfilePage = () => {
     setMessage({ type: 'success', text: 'Profil berhasil diperbarui!' });
     setPassword('');
     setConfirmPassword('');
-    
+
     // This event tells the header to update the user's name
     window.dispatchEvent(new Event("storage"));
     // --- End of Robust Update Logic ---
   };
-  
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -72,13 +77,13 @@ const ProfilePage = () => {
         setMessage({ type: 'error', text: 'Silakan pilih file gambar (JPEG, PNG, JPG, GIF).' });
         return;
       }
-      
+
       // Validate file size (max 2MB)
       if (file.size > 2 * 1024 * 1024) {
         setMessage({ type: 'error', text: 'Ukuran file terlalu besar. Maksimal 2MB.' });
         return;
       }
-      
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result);
@@ -86,7 +91,7 @@ const ProfilePage = () => {
       reader.readAsDataURL(file);
     }
   };
-  
+
   const triggerFileSelect = () => {
     fileInputRef.current.click();
   };
@@ -105,9 +110,9 @@ const ProfilePage = () => {
           {/* Profile Image Section */}
           <div className="flex flex-col items-center mb-6">
             <div className="relative">
-              <img 
-                src={profileImage} 
-                alt="Profile" 
+              <img
+                src={profileImage}
+                alt="Profile"
                 className="w-24 h-24 rounded-full border-4 border-gray-300 object-cover"
               />
               <button
@@ -134,10 +139,10 @@ const ProfilePage = () => {
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
               Nama Lengkap
             </label>
-            <input 
-              className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-              id="name" 
-              type="text" 
+            <input
+              className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              id="name"
+              type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -147,27 +152,30 @@ const ProfilePage = () => {
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
               Email
             </label>
-            <input 
-              className="w-full bg-gray-100 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 cursor-not-allowed" 
-              id="email" 
-              type="email" 
+            <input
+              className="w-full bg-gray-100 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 cursor-not-allowed"
+              id="email"
+              type="email"
               value={currentUser.email}
               readOnly
             />
           </div>
 
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="unit">
-              Unit
-            </label>
-            <input
-              className="w-full bg-gray-100 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 cursor-not-allowed"
-              id="unit"
-              type="text"
-              value={currentUser.unit || 'Unit tidak ditentukan'}
-              readOnly
-            />
-          </div>
+          {/* Unit Field - only for agents */}
+          {currentUser.role === 'agent' && (
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="unit">
+                Unit
+              </label>
+              <input
+                className="w-full bg-gray-100 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 cursor-not-allowed"
+                id="unit"
+                type="text"
+                value={currentUser.unit || 'Belum Ditentukan'}
+                readOnly
+              />
+            </div>
+          )}
 
           <hr className="border-gray-300 my-8" />
 
@@ -176,10 +184,10 @@ const ProfilePage = () => {
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
               Password Baru
             </label>
-            <input 
-              className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-              id="password" 
-              type="password" 
+            <input
+              className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              id="password"
+              type="password"
               placeholder="Kosongkan jika tidak ingin diubah"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -189,10 +197,10 @@ const ProfilePage = () => {
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">
               Konfirmasi Password Baru
             </label>
-            <input 
-              className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-              id="confirmPassword" 
-              type="password" 
+            <input
+              className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              id="confirmPassword"
+              type="password"
               placeholder="Konfirmasi password baru Anda"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -200,7 +208,7 @@ const ProfilePage = () => {
           </div>
 
           <div className="flex justify-end">
-            <button 
+            <button
               className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300"
               type="submit">
               Simpan Perubahan

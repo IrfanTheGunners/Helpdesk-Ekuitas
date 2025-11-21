@@ -35,6 +35,12 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Cleanup function to remove password reset requests data
+const cleanupPasswordResetData = () => {
+  // Remove password reset requests data that may have been stored previously
+  localStorage.removeItem('passwordResetRequests');
+};
+
 
 function App() {
   // Centralized data initialization
@@ -49,6 +55,9 @@ function App() {
     if (!localStorage.getItem('notifications')) {
       localStorage.setItem('notifications', JSON.stringify([]));
     }
+
+    // Cleanup any existing password reset requests data
+    cleanupPasswordResetData();
   }, []);
 
   return (

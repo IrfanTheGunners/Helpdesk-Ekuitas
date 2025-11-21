@@ -1093,9 +1093,8 @@ const Dashboard = () => {
         setDailyStats(dailyResult);
         setMonthlySummary(monthlyResult);
 
-        // Get recent tickets for agent dashboard - show all recent tickets, not just assigned ones
-        const sortedTickets = [...allTickets].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        setRecentTickets(sortedTickets.slice(0, 5));
+        // Get all tickets for agent dashboard - to be filtered later for recent unassigned tickets
+        setRecentTickets(allTickets);
       }
     };
 
@@ -1260,7 +1259,7 @@ const Dashboard = () => {
                   const now = new Date();
                   const diffInMs = now - createdDate;
                   const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-                  return diffInMinutes <= 15; // Hanya tampilkan tiket yang dibuat dalam 15 menit terakhir
+                  return diffInMinutes <= 10; // Hanya tampilkan tiket yang dibuat dalam 10 menit terakhir
                 })
                 .slice(0, 4)
                 .map(ticket => (
@@ -1314,6 +1313,14 @@ const Dashboard = () => {
               {recentTickets && recentTickets.length > 0 ? (
                 recentTickets
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .filter(ticket => {
+                  // Hanya tampilkan tiket yang belum ditugaskan dan dibuat dalam 10 menit terakhir
+                  const createdDate = new Date(ticket.createdAt);
+                  const now = new Date();
+                  const diffInMs = now - createdDate;
+                  const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+                  return ticket.agentId === null && diffInMinutes <= 10; // Hanya tiket belum ditugaskan dalam 10 menit terakhir
+                })
                 .slice(0, 6)
                 .map(ticket => {
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Ticket, PlusCircle, LifeBuoy, X, FileText, FolderKanban, MessageCircleMore, Shield } from 'lucide-react';
+import { LayoutDashboard, Ticket, PlusCircle, LifeBuoy, X, FileText, FolderKanban, MessageCircleMore, Shield, Key } from 'lucide-react';
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -28,7 +28,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     { icon: <MessageCircleMore size={20} />, name: 'Monitoring Agent', path: '/admin/monitoring-agent' },
     { icon: <FileText size={20} />, name: 'Laporan Unit', path: '/admin/unit-report' },
   ];
-  
+
   const superAdminLinks = [
     { icon: <LayoutDashboard size={20} />, name: 'Dasbor', path: '/dashboard' },
     { icon: <FileText size={20} />, name: 'Tiket', path: '/admin/tickets' },

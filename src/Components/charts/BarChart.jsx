@@ -7,6 +7,7 @@ const BarChart = ({ data }) => {
   }
 
   const maxValue = Math.max(...data.map(item => item.value), 1); // Avoid division by zero
+  const totalValue = data.reduce((sum, item) => sum + item.value, 0);
 
   // Gunakan warna dari palette Anda
   const colors = {
@@ -25,15 +26,26 @@ const BarChart = ({ data }) => {
         <span className="text-xs" style={{color: '#5A5858'}}>{Math.round(maxValue * 0.25)}</span>
         <span className="text-xs" style={{color: '#5A5858'}}>0</span>
       </div>
-      
-      {/* Chart bars */}
-      <div className="flex-1 flex items-end justify-around pt-4">
+
+      {/* Chart bars with horizontal grid lines */}
+      <div className="flex-1 flex items-end justify-around pt-4 relative">
+        {/* Horizontal grid lines - inside the chart area */}
+        <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+          {[0, 0.25, 0.5, 0.75, 1].map((ratio, idx) => (
+            <div
+              key={idx}
+              className="absolute w-full border-t border-gray-200"
+              style={{bottom: `${ratio * 100}%`}}
+            ></div>
+          ))}
+        </div>
+
         {data.map(item => (
-          <div key={item.label} className="h-full flex flex-col items-center pb-4" style={{width: '30%'}}>
+          <div key={item.label} className="h-full flex flex-col items-center pb-4 relative z-10" style={{width: '30%'}}>
             <div className="flex flex-col items-center justify-end w-full" style={{height: '100%'}}>
-              <div 
+              <div
                 className="w-3/4 rounded-t-md transition-all duration-500 shadow-md mx-auto"
-                style={{ 
+                style={{
                   height: `${maxValue > 0 ? (item.value / maxValue) * 100 : 0}%`,
                   backgroundColor: colors[item.label] || '#5A5858', // Abu-abu dari palette sebagai fallback
                   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
