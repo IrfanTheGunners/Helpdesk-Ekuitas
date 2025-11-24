@@ -123,20 +123,6 @@ export default function LandingPage() {
       )}
 
 
-      {/* Footer */}
-      <footer className="bg-[#5A5858] text-white py-10 mt-20">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-6 md:mb-0">
-              <h3 className="text-xl font-bold mb-2"><span className="text-[#F6E603] font-bold">Helpdesk</span> System</h3>
-              <p className="text-[#0F50A1]">Universitas Ekuitas</p>
-            </div>
-            <div className="flex flex-col items-center md:items-end">
-              <p>© {new Date().getFullYear()} <span className="text-[#0F50A1] font-bold">Universitas Ekuitas</span>. All rights reserved.</p>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

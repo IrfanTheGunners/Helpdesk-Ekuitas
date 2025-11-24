@@ -65,9 +65,15 @@ const SystemControlPage = () => {
 
   const handleCreateUser = (e) => {
     e.preventDefault();
-    
+
     if (!newUserData.name || !newUserData.email || !newUserData.password) {
       alert('Silakan lengkapi semua field');
+      return;
+    }
+
+    // Validasi wajib memilih unit jika role adalah agent
+    if (newUserData.role === 'agent' && !newUserData.unit) {
+      alert('Memilih unit terlebih dahulu');
       return;
     }
 
@@ -491,11 +497,11 @@ const SystemControlPage = () => {
                     alert('Silakan masukkan nama unit');
                     return;
                   }
-                  
-                  // Tambah unit ke dalam localStorage 
+
+                  // Tambah unit ke dalam localStorage
                   const users = JSON.parse(localStorage.getItem('users')) || [];
                   const hasExistingUser = users.some(user => user.unit === newUserData.unit);
-                  
+
                   if (!hasExistingUser) {
                     // Tambahkan dummy user untuk menyimpan unit
                     const dummyUser = {
@@ -506,12 +512,12 @@ const SystemControlPage = () => {
                       role: 'client',
                       unit: newUserData.unit
                     };
-                    
+
                     users.push(dummyUser);
                     localStorage.setItem('users', JSON.stringify(users));
                     setUsers(users);
                   }
-                  
+
                   alert(`Unit "${newUserData.unit}" berhasil ditambahkan!`);
                   setNewUserData({...newUserData, unit: ''});
                 }}
@@ -519,6 +525,96 @@ const SystemControlPage = () => {
                 Tambahkan Unit
               </button>
             </div>
+          </div>
+
+          {/* Agent List */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2" style={{color: '#5A5858'}}>
+                <UserX size={24} style={{color: '#5A5858'}} />
+                Daftar Agent
+              </h2>
+            </div>
+
+            <div className="overflow-x-auto rounded-lg border border-gray-300">
+              <table className="w-full text-xs md:text-sm">
+                <thead className="bg-gray-50">
+                  <tr className="border-b border-gray-300">
+                    <th className="py-3 px-2 md:px-4 text-left font-medium" style={{color: '#5A5858'}}>ID</th>
+                    <th className="py-3 px-2 md:px-4 text-left font-medium" style={{color: '#5A5858'}}>Nama</th>
+                    <th className="py-3 px-2 md:px-4 text-left font-medium" style={{color: '#5A5858'}}>Email</th>
+                    <th className="py-3 px-2 md:px-4 text-left font-medium" style={{color: '#5A5858'}}>Unit</th>
+                    <th className="py-3 px-2 md:px-4 text-center font-medium" style={{color: '#5A5858'}}>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.filter(user => user.role === 'agent').map((user, index) => (
+                    <tr key={user.id} className={`border-b border-gray-300 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors duration-150`}>
+                      <td className="py-3 px-2 md:px-4 font-mono" style={{color: '#5A5858'}}>#{index + 1}</td>
+                      <td className="py-3 px-2 md:px-4 font-medium" style={{color: '#5A5858'}}>{user.name}</td>
+                      <td className="py-3 px-2 md:px-4 text-gray-600" style={{color: '#5A5858'}}>{user.email}</td>
+                      <td className="py-3 px-2 md:px-4">
+                        <div className="relative">
+                          <select
+                            value={user.unit || ''}
+                            onChange={(e) => {
+                              const updatedUsers = users.map(u =>
+                                u.id === user.id ? {...u, unit: e.target.value} : u
+                              );
+                              localStorage.setItem('users', JSON.stringify(updatedUsers));
+                              setUsers(updatedUsers);
+                              alert(`Unit untuk ${user.name} berhasil diubah menjadi ${e.target.value}`);
+                            }}
+                            className="bg-gray-50 border border-gray-300 rounded-lg py-1 px-2 text-xs focus:outline-none focus:ring-1 focus:ring-[#5A5858] appearance-none"
+                          >
+                            <option value="">Pilih Unit</option>
+                            <option value="Fakultas Ilmu Komputer">Fakultas Ilmu Komputer</option>
+                            <option value="Fakultas Ekonomi">Fakultas Ekonomi</option>
+                            <option value="Fakultas Hukum">Fakultas Hukum</option>
+                            <option value="Fakultas Teknik">Fakultas Teknik</option>
+                            <option value="Fakultas Kedokteran">Fakultas Kedokteran</option>
+                            <option value="Bagian Keuangan">Bagian Keuangan</option>
+                            <option value="Bagian Kepegawaian">Bagian Kepegawaian</option>
+                            <option value="Bagian Administrasi">Bagian Administrasi</option>
+                            <option value="Perpustakaan">Perpustakaan</option>
+                            <option value="Pusat Laboratorium">Pusat Laboratorium</option>
+                            <option value="Pusat Penelitian">Pusat Penelitian</option>
+                            <option value="Bagian IT">Bagian IT</option>
+                            {uniqueUnits.map((unit, idx) => (
+                              <option key={idx} value={unit}>{unit}</option>
+                            ))}
+                          </select>
+                          <div className="absolute inset-y-0 right-0 flex items-center px-1 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                            </svg>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-2 md:px-4 text-center">
+                        <button
+                          onClick={() => {
+                            if (window.confirm(`Anda yakin ingin menghapus agent ${user.name}?`)) {
+                              const updatedUsers = users.filter(u => u.id !== user.id);
+                              localStorage.setItem('users', JSON.stringify(updatedUsers));
+                              setUsers(updatedUsers);
+                              alert('Agent berhasil dihapus');
+                            }
+                          }}
+                          className="text-[0.7rem] md:text-xs bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded whitespace-nowrap"
+                        >
+                          Hapus
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {users.filter(user => user.role === 'agent').length === 0 && (
+              <p className="text-gray-500 text-center py-6">Tidak ada agent ditemukan</p>
+            )}
           </div>
 
           {/* Unit List */}

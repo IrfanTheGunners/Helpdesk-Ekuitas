@@ -110,11 +110,17 @@ const ProfilePage = () => {
           {/* Profile Image Section */}
           <div className="flex flex-col items-center mb-6">
             <div className="relative">
-              <img
-                src={profileImage}
-                alt="Profile"
-                className="w-24 h-24 rounded-full border-4 border-gray-300 object-cover"
-              />
+              {profileImage && profileImage !== '/src/assets/default-avatar.svg' && profileImage !== '/src/assets/default-avatar.png' && !profileImage.startsWith('data:image') ? (
+                <img
+                  src={profileImage}
+                  alt="Profile"
+                  className="w-24 h-24 rounded-full border-4 border-gray-300 object-cover"
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-full border-4 border-gray-300 flex items-center justify-center bg-blue-600 text-white font-bold text-xl">
+                  {currentUser.name.charAt(0).toUpperCase()}
+                </div>
+              )}
               <button
                 type="button"
                 onClick={triggerFileSelect}

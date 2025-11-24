@@ -163,10 +163,10 @@ const Header = ({ setIsSidebarOpen, onOpenProfileModal }) => {
         <div className="flex items-center gap-2 sm:gap-4">
             <div className="relative profile-menu">
             <button onClick={toggleProfileDropdown} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm p-2 overflow-hidden">
-                {user && user.profileImage ? (
-                    <img 
-                        src={user.profileImage} 
-                        alt="Profile" 
+                {user && user.profileImage && user.profileImage !== '/src/assets/default-avatar.svg' && user.profileImage !== '/src/assets/default-avatar.png' && !user.profileImage.startsWith('data:image') ? (
+                    <img
+                        src={user.profileImage}
+                        alt="Profile"
                         className="w-full h-full object-cover rounded-full"
                     />
                 ) : (

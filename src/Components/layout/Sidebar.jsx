@@ -6,31 +6,31 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
   const clientLinks = [
-    { icon: <LayoutDashboard size={20} />, name: 'Dasboard', path: '/dashboard' },
+    { icon: <LayoutDashboard size={20} />, name: 'Dashboard', path: '/dashboard' },
     { icon: <FileText size={20} />, name: 'Tiket Saya', path: '/tickets' },
     { icon: <LifeBuoy size={20} />, name: 'Pusat Bantuan', path: '/kb' },
   ];
 
   const agentLinks = [
-    { icon: <LayoutDashboard size={20} />, name: 'Dasboard', path: '/dashboard' },
+    { icon: <LayoutDashboard size={20} />, name: 'Dashboard', path: '/dashboard' },
     { icon: <FolderKanban size={20} />, name: 'Antrian Tiket', path: '/queue' },
     { icon: <FileText size={20} />, name: 'Laporan Unit', path: '/admin/unit-report' },
   ];
 
   const pimpinanLinks = [
-    { icon: <LayoutDashboard size={20} />, name: 'Dasbor', path: '/dashboard' },
+    { icon: <LayoutDashboard size={20} />, name: 'Dashboard', path: '/dashboard' },
     { icon: <FileText size={20} />, name: 'Laporan Unit', path: '/admin/unit-report' },
   ];
 
   const adminLinks = [
-    { icon: <LayoutDashboard size={20} />, name: 'Dasbor', path: '/dashboard' },
+    { icon: <LayoutDashboard size={20} />, name: 'Dashboard', path: '/dashboard' },
     { icon: <FileText size={20} />, name: 'Tiket', path: '/admin/tickets' },
     { icon: <MessageCircleMore size={20} />, name: 'Monitoring Agent', path: '/admin/monitoring-agent' },
     { icon: <FileText size={20} />, name: 'Laporan Unit', path: '/admin/unit-report' },
   ];
 
   const superAdminLinks = [
-    { icon: <LayoutDashboard size={20} />, name: 'Dasbor', path: '/dashboard' },
+    { icon: <LayoutDashboard size={20} />, name: 'Dashboard', path: '/dashboard' },
     { icon: <FileText size={20} />, name: 'Tiket', path: '/admin/tickets' },
     { icon: <MessageCircleMore size={20} />, name: 'Monitoring Agent', path: '/admin/monitoring-agent' },
     { icon: <FileText size={20} />, name: 'Laporan Unit', path: '/admin/unit-report' },

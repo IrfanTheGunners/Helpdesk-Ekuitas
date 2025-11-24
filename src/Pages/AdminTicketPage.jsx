@@ -367,8 +367,8 @@ const AdminTicketPage = () => {
                 <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Kategori</th>
                 <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Status</th>
                 <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Pengguna</th>
-                <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Unit</th>
                 <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Agent</th>
+                <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Unit</th>
                 <th className="py-2 px-4 text-left" style={{color: '#5A5858'}}>Tanggal</th>
                 <th className="py-2 px-4 text-center" style={{color: '#5A5858'}}>Aksi</th>
               </tr>
@@ -398,8 +398,8 @@ const AdminTicketPage = () => {
                         </span>
                       </td>
                       <td className="py-2 px-4" style={{color: '#5A5858'}}>{user ? user.name : 'Tidak Diketahui'}</td>
-                      <td className="py-2 px-4" style={{color: '#5A5858'}}>{user ? user.unit || 'Unit Tidak Diketahui' : 'Unit Tidak Diketahui'}</td>
                       <td className="py-2 px-4" style={{color: '#5A5858'}}>{getAgentName(ticket.agentId)}</td>
+                      <td className="py-2 px-4" style={{color: '#5A5858'}}>{ticket.agentId ? (users.find(u => u.id === ticket.agentId)?.unit || 'Unit Tidak Diketahui') : 'Belum Ditugaskan'}</td>
                       <td className="py-2 px-4" style={{color: '#5A5858'}}>{new Date(ticket.createdAt).toLocaleDateString()}</td>
                       <td className="py-2 px-4 text-center">
                         <button 
