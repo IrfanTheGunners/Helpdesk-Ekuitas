@@ -169,6 +169,11 @@ const SystemControlPage = () => {
 
   return (
     <DashboardLayout>
+      <style>{`
+        select option {
+          color: #5A5858;
+        }
+      `}</style>
       <div className="mb-6 md:mb-8">
         <h1 className="text-2xl md:text-3xl font-bold" style={{color: '#5A5858'}}>System Control</h1>
         <p className="text-gray-600" style={{color: '#5A5858'}}>Kontrol sistem tingkat lanjut untuk Super Admin</p>
@@ -566,6 +571,7 @@ const SystemControlPage = () => {
                               alert(`Unit untuk ${user.name} berhasil diubah menjadi ${e.target.value}`);
                             }}
                             className="bg-gray-50 border border-gray-300 rounded-lg py-1 px-2 text-xs focus:outline-none focus:ring-1 focus:ring-[#5A5858] appearance-none"
+                            style={{color: '#5A5858'}}
                           >
                             <option value="">Pilih Unit</option>
                             <option value="Fakultas Ilmu Komputer">Fakultas Ilmu Komputer</option>
@@ -653,7 +659,7 @@ const SystemControlPage = () => {
                   {Array.from(new Set(users.map(user => user.unit).filter(unit => unit))).map((unit, index) => (
                     <tr key={index} className={`border-b border-gray-300 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors duration-150`}>
                       <td className="py-3 px-2 md:px-4 font-mono" style={{color: '#5A5858'}}>{index + 1}</td>
-                      <td className="py-3 px-2 md:px-4 font-medium" style={{color: '#5A5858'}}>{unit}</td>
+                      <td className="py-3 px-2 md:px-4" style={{color: '#5A5858'}}>{unit}</td>
                       <td className="py-3 px-2 md:px-4 text-center">
                         <div className="flex flex-col sm:flex-row sm:justify-center gap-2 min-w-max">
                           <button
